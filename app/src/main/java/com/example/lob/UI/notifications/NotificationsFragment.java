@@ -1,4 +1,4 @@
-package com.example.lob.ui.notifications;
+package com.example.lob.UI.notifications;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
