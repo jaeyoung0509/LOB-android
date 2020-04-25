@@ -33,15 +33,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth googleAuth = null;
     private GoogleSignInClient GoogleSignInClient = null;
     private GoogleSignInOptions gso = null;
-    private static final int RC_SIGN_IN = 9001;
+    private static final int Google_RC_SIGN_IN = 9001;
     private UserDto  userDto= null;
-    private String statusText = "";
-    private String detailText = "";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+        setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.signInGoogleButton).setOnClickListener(this);
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Google_RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) { //구글버튼 로그인 누르고, 구글사용자 확인되면 실행되는 로직
                 // Google Sign In was successful, authenticate with Firebase
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void signIn() {
         Intent signInIntent = GoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivityForResult(signInIntent, Google_RC_SIGN_IN);
     }
 
     public void signOut() {
