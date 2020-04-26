@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.example.lob.DTO.UserDto;
+import com.example.lob.UI.settings.SettingsFragment;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account); //구글이용자 확인된 사람정보 파이어베이스로 넘기기
             } else {
+                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
                 // Google Sign In failed, update UI appropriately
                 Toast.makeText(this, "로그인실패", Toast.LENGTH_SHORT).show();
             }
@@ -115,7 +117,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, UserActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);
-            finish();
+            Intent intent2= new Intent(this, SettingsFragment.class);
+            intent2.putExtra("userId",user.getUid());
+
         }
         else{
             Toast.makeText(this, "LoginError", Toast.LENGTH_SHORT).show();

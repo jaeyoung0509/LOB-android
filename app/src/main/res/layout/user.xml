@@ -8,14 +8,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:src="@drawable/main"
             android:id="@+id/userImg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_weight="3"></ImageView>
 
         <TextView

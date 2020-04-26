@@ -2,8 +2,10 @@ package com.example.lob.UI.settings;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,9 @@ import com.google.firebase.storage.FirebaseStorage;
 public class SettingsFragment extends Fragment {
     private Storage firebaseStorage;
     private SettingsViewModel settingsViewModel;
+    private String pathUri;
+    private static final int PICK_FROM_ALBUM=1;
+    private Uri imageUri;
     Button settingButton_userImg;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -37,11 +42,9 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                {
-                   Intent imgintent = new Intent();
-                   imgintent.setType("image/*");
-                   imgintent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                   imgintent.setAction(Intent.ACTION_GET_CONTENT);
-                 // firebaseStorage=
+                   Intent imgintent = new Intent(Intent.ACTION_PICK);
+                   imgintent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                   startActivityForResult(imgintent,PICK_FROM_ALBUM);
                 }
             }
         });
@@ -53,4 +56,15 @@ public class SettingsFragment extends Fragment {
         });*/
         return root;
     }
-}
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case PICK_FROM_ALBUM: { // 코드 일치
+                // Uri
+                Log.e("asdasdasdas", String.valueOf(data));
+                  firebaseStorage.UploadProfile(imageUri,"이거좀고민");
+            }
+        }
+    }
+    }
+
