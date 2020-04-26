@@ -2,6 +2,8 @@ package com.example.lob;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.lob.DTO.UserDto;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -13,16 +15,22 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class UserActivity extends AppCompatActivity {
-
+    private  UserDto user;
+    TextView usermail;
+    ImageView userImg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        UserDto user;
-
+        setTheme(android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+        setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-      //  Intent intent=getIntent();
-      //  user= (UserDto)intent.getSerializableExtra("user");
+        userImg=findViewById(R.id.userImg);
+        usermail=findViewById(R.id.userEmail);
+
+        Intent intent=getIntent();
+        user= (UserDto)intent.getSerializableExtra("user");
+        usermail.setText(user.getUserMail().substring(0,user.getUserMail().lastIndexOf("@"))+"님");
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.

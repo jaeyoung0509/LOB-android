@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         signOut();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = googleAuth.getCurrentUser();
-        Log.e("asdasdsada", String.valueOf(currentUser));
         updateUI(currentUser);
     }
 
