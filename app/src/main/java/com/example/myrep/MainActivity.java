@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final  String TAG = getClass().getSimpleName();
 
     // server의 url을 적어준다
-    private final String BASE_URL = "https://521d3812.ngrok.io";
+    private final String BASE_URL = "https://865c6ff9.ngrok.io";
     private MyAPI mMyAPI;
 
     private TextView mListTv;
