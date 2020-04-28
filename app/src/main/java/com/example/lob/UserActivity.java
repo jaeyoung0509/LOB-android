@@ -16,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -45,7 +46,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         Intent intent=getIntent();
         user= (UserDto)intent.getSerializableExtra("user");
         usermail.setText(user.getUserMail().substring(0,user.getUserMail().lastIndexOf("@"))+"님");
-
+        //--------------------------------------------------------------
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -61,4 +62,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
     }
+
 }
+

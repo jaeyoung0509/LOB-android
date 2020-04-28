@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onStart() {
         super.onStart();
-        signOut();
+      //  signOut();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = googleAuth.getCurrentUser();
         updateUI(currentUser);
