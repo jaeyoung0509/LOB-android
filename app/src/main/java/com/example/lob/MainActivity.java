@@ -29,14 +29,14 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.io.Serializable;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
     private SignInButton signInGoogleButton;
     private FirebaseAuth googleAuth = null;
     private GoogleSignInClient GoogleSignInClient = null;
     private GoogleSignInOptions gso = null;
     private static final int Google_RC_SIGN_IN = 9001;
     private UserDto  userDto= null;
-
+    private  GoogleSignInClient googleSignInClient = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,26 +44,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.signInGoogleButton).setOnClickListener(this);
-
-
         signInGoogleButton = findViewById(R.id.signInGoogleButton);
-        //google 다음과 같이 GoogleSignInOptions 객체를 구성할 때 requestIdToken을 호출합니다.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        GoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        googleAuth = FirebaseAuth.getInstance();
+        signInGoogleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+                googleSignInClient = GoogleSignIn.getClient(MainActivity.this, gso);
+                googleAuth = FirebaseAuth.getInstance();
+                signIn();
 
+            }
+        });
+        //google 다음과 같이 GoogleSignInOptions 객체를 구성할 때 requestIdToken을 호출합니다.
     }
     @Override
     public void onStart() {
         super.onStart();
-      //  signOut();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = googleAuth.getCurrentUser();
-        updateUI(currentUser);
+        if(googleAuth != null){
+            FirebaseUser currentUser = googleAuth.getCurrentUser();
+            updateUI(currentUser);
+
+        }
     }
 
     @Override
@@ -78,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account); //구글이용자 확인된 사람정보 파이어베이스로 넘기기
             } else {
-                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
                 // Google Sign In failed, update UI appropriately
                 Toast.makeText(this, "로그인실패", Toast.LENGTH_SHORT).show();
             }
@@ -128,19 +132,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void signIn() {
-        Intent signInIntent = GoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, Google_RC_SIGN_IN);
+        if (googleSignInClient != null) {
+            Intent signInIntent = googleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, Google_RC_SIGN_IN);
+        }
     }
 
     public void signOut() {
         FirebaseAuth.getInstance().signOut();
     }
 
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.signInGoogleButton) {
-            signIn();
-        }
-    }
+
 }

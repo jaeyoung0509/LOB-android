@@ -7,25 +7,33 @@
     android:paddingTop="?attr/actionBarSize">
 
     <LinearLayout
+        android:weightSum="10"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:src="@drawable/main"
             android:id="@+id/userImg"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_weight="3"></ImageView>
+            android:layout_width="38dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"></ImageView>
 
         <TextView
             android:textSize="20dp"
             android:id="@+id/userEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="7"
+            android:layout_weight="8"
             android:text="asdadasdads"></TextView>
+
+        <ImageView
+            android:id="@+id/button_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_thumb_down_black_24dp">
+        </ImageView>
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
