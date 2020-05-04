@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -33,12 +34,12 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class UserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private FirebaseAuth gooleAuth;
     private FirebaseStorage storage;
     private StorageReference storageReference;
     TextView usermail;
     ImageView userImg;
     ImageView butoon_logout;
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -50,11 +51,23 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         butoon_logout=findViewById(R.id.button_logout);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         userImg=findViewById(R.id.userImg);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         usermail=findViewById(R.id.userEmail);
-        gooleAuth=FirebaseAuth.getInstance();
-        storage=FirebaseStorage.getInstance();
-        storageReference=storage.getReference().child("/profile/"+gooleAuth.getUid());
-        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+        if(user == null){
+            Log.e("asdadasdasdasd","auth error");
+        }
+       if(usermail==null){
+            Log.e("asdasdasdas","text error");
+        }
+        else  if(user!=null){
+            Log.e("asdasdasds",user.getEmail());
+       usermail.setText(user.getEmail().substring(0,user.getEmail().lastIndexOf("@"))+"님");
+
+           Log.e("asdasdasdas","text asdasdasds");
+        }
+       // storage=FirebaseStorage.getInstance();
+       // storageReference=storage.getReference().child("/profile/"+googleAuth.getUid());
+       /* storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if(task.isSuccessful()){
@@ -65,12 +78,12 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                             .into(userImg);
                 }
             }
-        });
+        });*/
 
         butoon_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gooleAuth.signOut();
+                FirebaseAuth.getInstance().signOut();
                 Intent intent1=new Intent(UserActivity.this, MainActivity.class);
                 startActivity(intent1);
                 finish();
