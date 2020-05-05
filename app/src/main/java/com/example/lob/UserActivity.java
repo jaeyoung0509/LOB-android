@@ -1,21 +1,32 @@
 package com.example.lob;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.lob.DTO.UserDto;
+import com.example.lob.Service.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -27,15 +38,24 @@ import com.google.firebase.storage.StorageReference;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.loader.content.CursorLoader;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class UserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private FirebaseStorage storage;
+    private FirebaseStorage firebaseStorage=FirebaseStorage.getInstance();
+    private  Storage storage;
     private StorageReference storageReference;
+    private static final int PICK_FROM_ALBUM=1;
+    private FirebaseAuth googleAuth;
+    public   Context CONTEXT;
+    private  FirebaseUser currentUser;
+
     TextView usermail;
     ImageView userImg;
     ImageView butoon_logout;
@@ -47,39 +67,37 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         setTheme(android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         super.onCreate(savedInstanceState);
+        CONTEXT=this;
         setContentView(R.layout.user);
         butoon_logout=findViewById(R.id.button_logout);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         userImg=findViewById(R.id.userImg);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        googleAuth = FirebaseAuth.getInstance();
+        currentUser = googleAuth.getCurrentUser();
         usermail=findViewById(R.id.userEmail);
-        if(user == null){
-            Log.e("asdadasdasdasd","auth error");
-        }
-       if(usermail==null){
-            Log.e("asdasdasdas","text error");
-        }
-        else  if(user!=null){
-            Log.e("asdasdasds",user.getEmail());
-       usermail.setText(user.getEmail().substring(0,user.getEmail().lastIndexOf("@"))+"님");
+         if(currentUser!=null){
+            Log.e("asdasdasds",currentUser.getEmail());
+       usermail.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
+                storageReference=firebaseStorage.getReference().child("/profile/"+currentUser.getUid());
+               storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                   @Override
+                   public void onComplete(@NonNull Task<Uri> task) {
+                       if(task.isSuccessful()){
+                           Log.e("TTTTT","zxczczxczxczxc");
+                           Glide.with(UserActivity.this)
+                                   .load(task.getResult())
+                                   .apply(RequestOptions.circleCropTransform())
+                                   .into(userImg);
+                       }
+                   }
+               }).addOnFailureListener(new OnFailureListener() {
+                   @Override
+                   public void onFailure(@NonNull Exception e) {
+                       show();
+                   }
+               });
 
-           Log.e("asdasdasdas","text asdasdasds");
-        }
-       // storage=FirebaseStorage.getInstance();
-       // storageReference=storage.getReference().child("/profile/"+googleAuth.getUid());
-       /* storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if(task.isSuccessful()){
-                    Log.e("TTTTT","zxczczxczxczxc");
-                    Glide.with(UserActivity.this)
-                            .load(task.getResult())
-                          .apply(RequestOptions.circleCropTransform())
-                            .into(userImg);
-                }
-            }
-        });*/
-
+         }
         butoon_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,5 +122,69 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
+    void show()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Profile 설정");
+        builder.setMessage("안녕하세요 프로필을 설정해주세요");
+        builder.setPositiveButton("기본이미지",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        storage=new Storage();
+                        Uri drawablePath = getURLForResource(R.drawable.normal_profile);
+                        storage.UploadProfile(drawablePath,currentUser.getUid());
+                        onResume();
+                    }
+                });
+
+        builder.setNegativeButton("갤러리에서 선택",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent imgintent = new Intent(Intent.ACTION_PICK);
+                        imgintent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                        startActivityForResult(imgintent,PICK_FROM_ALBUM);
+                    }
+                });
+        builder.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICK_FROM_ALBUM: { // 코드 일치
+                storage=new Storage();
+                storage.UploadProfile( getPath(data.getData()),currentUser.getUid());
+                onResume();
+            }
+        }
+    }
+    public String getPath(Uri uri ){
+        String [] proj ={MediaStore.Images.Media.DATA};
+        Cursor cursor =null;
+        int index;
+        String name = null;
+        CursorLoader cursorLoader= new CursorLoader(this.getApplicationContext(),uri,proj,null,null,null);
+        if(cursorLoader!=null) {
+            cursor = cursorLoader.loadInBackground();
+            index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            name=cursor.getString(index);
+            cursor.close();
+        }
+        return name;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    private Uri getURLForResource(int resId) {
+        Resources resources = CONTEXT.getResources();
+    return     Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
+    }
 }
+
 

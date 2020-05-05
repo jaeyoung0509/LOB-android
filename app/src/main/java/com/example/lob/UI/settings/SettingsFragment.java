@@ -1,6 +1,7 @@
 
 package com.example.lob.UI.settings;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import androidx.annotation.Nullable;
@@ -68,12 +69,15 @@ public class SettingsFragment extends Fragment {
                 Log.e("asdasdasdas", String.valueOf(  getPath(data.getData())));
                 Log.e("asdasdasdasd",currentUser.getUid());
                 storage=new Storage();
-                storage.UploadProfile( getPath(data.getData()),currentUser.getUid());
+                if(storage.defeteFile(currentUser.getUid()) == true){
+                    storage.UploadProfile( getPath(data.getData()),currentUser.getUid());
+
+                }
             }
         }
     }
 
-    public String getPath(Uri uri){
+    public String getPath(Uri uri ){
         String [] proj ={MediaStore.Images.Media.DATA};
         Cursor cursor =null;
         int index;
