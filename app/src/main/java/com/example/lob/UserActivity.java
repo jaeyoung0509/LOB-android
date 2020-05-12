@@ -72,7 +72,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         BottomNavigationView navView = findViewById(R.id.nav_view);
         userImg=findViewById(R.id.userImg);
         usermail=findViewById(R.id.userEmail);
-        onResume();
+        onRestart();
 
         butoon_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,17 +127,16 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public synchronized  void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         if(currentUser!=null){
-            Log.e("asdasdasds",currentUser.getEmail());
             usermail.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
             storageReference=firebaseStorage.getReference().child("/profile/"+currentUser.getUid());
             storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if(task.isSuccessful()){
-                        Log.e("TTTTT","zxczczxczxczxc");
+                        Log.e("isTrue","zxczczxczxczxc");
                         Glide.with(UserActivity.this)
                                 .load(task.getResult())
                                 .apply(RequestOptions.circleCropTransform())
@@ -154,9 +153,29 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
 
-        }
+        }    }
+    @Override
+    public synchronized  void onResume() {
+        super.onResume();
+        updateProfile();
     }
 
+    public  void updateProfile(){
+        if(currentUser!=null){
+            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        Log.e("isTrue","zxczczxczxczxc");
+                        Glide.with(UserActivity.this)
+                                .load(task.getResult())
+                                .apply(RequestOptions.circleCropTransform())
+                                .into(userImg);
+                    }
+                }
+            });
+        }
+    }
     private Uri getURLForResource(int resId) {
         Resources resources = CONTEXT.getResources();
     return     Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );

@@ -75,12 +75,7 @@ public class SettingsFragment extends Fragment {
                 Log.e("asdasdasdas", String.valueOf(  getPath(data.getData())));
                 Log.e("asdasdasdasd",currentUser.getUid());
                 storage=new Storage();
-                storage.ModifyUpload(String.valueOf(data.getData()),currentUser.getUid());
-                ((UserActivity) UserActivity.CONTEXT).onResume();
-//                    Log.e("asdasdasdas","삭제완료~");
- //                   storage.UploadProfile( getPath(data.getData()),currentUser.getUid());
-  //                  ((UserActivity) UserActivity.CONTEXT).onResume();
-
+                storage.ModifyUpload(data.getData(),currentUser.getUid());
             }
         }
     }
@@ -114,7 +109,6 @@ public class SettingsFragment extends Fragment {
                         storage=new Storage();
                         Uri drawablePath = getURLForResource(R.drawable.normal_profile);
                         storage.UploadProfile(drawablePath,currentUser.getUid());
-                        ((UserActivity) UserActivity.CONTEXT).onResume();
 
                     }
                 });

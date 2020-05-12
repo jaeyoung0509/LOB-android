@@ -16,25 +16,6 @@ import java.io.File;
 
 public class Storage {
 
-       public void UploadProfile2(String filePath, final String userId)  {
-            FirebaseStorage storage;
-            StorageReference storageReference;
-           storage=FirebaseStorage.getInstance();
-        Uri file =Uri.fromFile(new File(filePath));
-        storageReference=storage.getReferenceFromUrl("gs://lobb-9ea28.appspot.com/")
-                .child("profile/"+userId);
-        UploadTask uploadTask=storageReference.putFile(file);
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Log.e("asdasdad2", String.valueOf(taskSnapshot));
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-            }
-        });
-    }
     public void  UploadProfile(Uri filePath, final String userId)  {
         FirebaseStorage storage;
         StorageReference storageReference;
@@ -44,16 +25,17 @@ public class Storage {
         storageReference=storage.getReferenceFromUrl("gs://lobb-9ea28.appspot.com/")
                 .child("profile/"+userId);
         UploadTask uploadTask=storageReference.putFile(file);
-
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                ((UserActivity)(UserActivity.CONTEXT)).onResume();
                 Log.e("asdasdad211111", String.valueOf(taskSnapshot));
+
             }
         });
     }
 
-    public void ModifyUpload(final String filePath , final String userId){
+    public synchronized void ModifyUpload(final Uri filePath , final String userId){
         FirebaseStorage storage;
         StorageReference storageReference;
         storage=FirebaseStorage.getInstance();
@@ -61,23 +43,10 @@ public class Storage {
         storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                FirebaseStorage storage;
-                StorageReference storageReference;
-                storage=FirebaseStorage.getInstance();
-                Uri file =Uri.fromFile(new File(filePath));
-                Log.e("여긴되나2","ㅁㄴ");
+                Log.e("슈!!!","슛ㅍ");
+               Storage storage1=new Storage();
+               storage1.UploadProfile(filePath , userId);
 
-                storageReference=storage.getReferenceFromUrl("gs://lobb-9ea28.appspot.com/")
-                        .child("profile/"+userId);
-                UploadTask uploadTask=storageReference.putFile(file);
-                Log.e("여긴되나1","ㅁㄴ");
-
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Log.e("true","true");
-                    }
-                });
             }
         });
     }
