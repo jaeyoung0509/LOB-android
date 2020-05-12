@@ -52,10 +52,9 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     private  Storage storage;
     private StorageReference storageReference;
     private static final int PICK_FROM_ALBUM=1;
-    private FirebaseAuth googleAuth;
-    public   Context CONTEXT;
-    private  FirebaseUser currentUser;
-
+    private FirebaseAuth  googleAuth = FirebaseAuth.getInstance();
+    public static Context CONTEXT;
+    private  FirebaseUser  currentUser = googleAuth.getCurrentUser();
     TextView usermail;
     ImageView userImg;
     ImageView butoon_logout;
@@ -72,32 +71,9 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         butoon_logout=findViewById(R.id.button_logout);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         userImg=findViewById(R.id.userImg);
-        googleAuth = FirebaseAuth.getInstance();
-        currentUser = googleAuth.getCurrentUser();
         usermail=findViewById(R.id.userEmail);
-         if(currentUser!=null){
-            Log.e("asdasdasds",currentUser.getEmail());
-       usermail.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
-                storageReference=firebaseStorage.getReference().child("/profile/"+currentUser.getUid());
-               storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                   @Override
-                   public void onComplete(@NonNull Task<Uri> task) {
-                       if(task.isSuccessful()){
-                           Log.e("TTTTT","zxczczxczxczxc");
-                           Glide.with(UserActivity.this)
-                                   .load(task.getResult())
-                                   .apply(RequestOptions.circleCropTransform())
-                                   .into(userImg);
-                       }
-                   }
-               }).addOnFailureListener(new OnFailureListener() {
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-                       show();
-                   }
-               });
+        onResume();
 
-         }
         butoon_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,43 +98,17 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
-    void show()
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Profile 설정");
-        builder.setMessage("안녕하세요 프로필을 설정해주세요");
-        builder.setPositiveButton("기본이미지",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        storage=new Storage();
-                        Uri drawablePath = getURLForResource(R.drawable.normal_profile);
-                        storage.UploadProfile(drawablePath,currentUser.getUid());
-                        onResume();
-                    }
-                });
-
-        builder.setNegativeButton("갤러리에서 선택",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent imgintent = new Intent(Intent.ACTION_PICK);
-                        imgintent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                        startActivityForResult(imgintent,PICK_FROM_ALBUM);
-                    }
-                });
-        builder.show();
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case PICK_FROM_ALBUM: { // 코드 일치
-                storage=new Storage();
-                storage.UploadProfile( getPath(data.getData()),currentUser.getUid());
-                onResume();
-            }
-        }
+       // switch (requestCode) {
+       //     case PICK_FROM_ALBUM: { // 코드 일치
+        //        storage=new Storage();
+         //       storage.UploadProfile2( getPath(data.getData()),currentUser.getUid());
+          //      onResume();
+         //   }
+
     }
     public String getPath(Uri uri ){
         String [] proj ={MediaStore.Images.Media.DATA};
@@ -177,8 +127,34 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onResume() {
+    public synchronized  void onResume() {
         super.onResume();
+        if(currentUser!=null){
+            Log.e("asdasdasds",currentUser.getEmail());
+            usermail.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
+            storageReference=firebaseStorage.getReference().child("/profile/"+currentUser.getUid());
+            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        Log.e("TTTTT","zxczczxczxczxc");
+                        Glide.with(UserActivity.this)
+                                .load(task.getResult())
+                                .apply(RequestOptions.circleCropTransform())
+                                .into(userImg);
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Storage storage = new Storage();
+                    Uri drawablePath = getURLForResource(R.drawable.normal_profile);
+                    storage.UploadProfile(drawablePath,currentUser.getUid());
+                    onResume();
+                }
+            });
+
+        }
     }
 
     private Uri getURLForResource(int resId) {
