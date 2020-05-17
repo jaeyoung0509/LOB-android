@@ -34,13 +34,14 @@ import com.example.lob.UserActivity;
 import com.google.android.gms.common.SignInButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
 import com.google.firebase.storage.FirebaseStorage;
 
 public class SettingsFragment extends Fragment {
     private Storage storage;
     private FirebaseAuth googleAuth = null;
     public static Context CONTEXT;
-
+    Button settingButton_mlkit;
     private FirebaseUser currentUser=null;
     private SettingsViewModel settingsViewModel;
     private String pathUri;
@@ -55,7 +56,8 @@ public class SettingsFragment extends Fragment {
         CONTEXT=this.getContext();
         ViewModelProviders.of(this).get(SettingsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_setting, container, false);
-        final TextView textView = root.findViewById(R.id.text_settings);
+//        final TextView textView = root.findViewById(R.id.text_settings);
+        settingButton_mlkit = root.findViewById(R.id.settingButton_mlkit);
         settingButton_userImg=root.findViewById(R.id.settingButton_userImg);
         settingButton_userImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +67,18 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+        settingButton_mlkit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseVisionImageMetadata metadata = new FirebaseVisionImageMetadata.Builder()
+                        .setWidth(480)   // 480x360 is typically sufficient for
+                        .setHeight(360)  // image recognition
+                        .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
+                        .build();
+
+            }
+        });
+
         return root;
     }
     @Override
