@@ -82,11 +82,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
 
 
-    private RefrigeratorFragment refrigeratorFragment = new RefrigeratorFragment();
-    private BasketFragment basketFragment = new BasketFragment();
-    private CalendarFragment calendarFragment = new CalendarFragment();
-    private CookingFragment cookingFragment = new CookingFragment();
-    private FavoriteFragment favoriteFragment = new FavoriteFragment();
     private DrawerLayout mDrawerLayout;
     private Context context = this;
 
@@ -114,7 +109,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
         NavigationUI.setupWithNavController(navView, navController);
-
+        NavigationUI.setupWithNavController(navView_toolbar, navController);
 
 
     }
