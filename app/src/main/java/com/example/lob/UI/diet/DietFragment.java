@@ -1,4 +1,4 @@
-package com.example.lob.UI.notifications;
+package com.example.lob.UI.diet;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,18 +13,19 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.lob.R;
+import com.example.lob.UI.consumption.ConsumptionViewModel;
 
-public class NotificationsFragment extends Fragment {
+public class DietFragment extends Fragment {
 
-    private NotificationsViewModel notificationsViewModel;
+    private DietViewModel dietViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                ViewModelProviders.of(this).get(NotificationsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_notifications, container, false);
-        final TextView textView = root.findViewById(R.id.text_notifications);
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        dietViewModel =
+                ViewModelProviders.of(this).get(DietViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_diet, container, false);
+        final TextView textView = root.findViewById(R.id.text_diet);
+        dietViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
@@ -32,4 +33,5 @@ public class NotificationsFragment extends Fragment {
         });
         return root;
     }
+
 }

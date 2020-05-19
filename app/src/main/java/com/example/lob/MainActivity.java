@@ -3,7 +3,9 @@ package com.example.lob;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import android.content.Intent;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         signInGoogleButton = findViewById(R.id.signInGoogleButton);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))

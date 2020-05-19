@@ -3,29 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/menu_home">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/menu_home"
         android:name="com.example.lob.UI.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.lob.UI.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/menu_consumption"
+        android:name="com.example.lob.UI.consumption.ConsumptionFragment"
+        android:label="@string/title_consumption"
+        tools:layout="@layout/fragment_consumption" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.lob.UI.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/menu_diet"
+        android:name="com.example.lob.UI.diet.DietFragment"
+        android:label="@string/title_diet"
+        tools:layout="@layout/fragment_diet" />
 
     <fragment
-        android:id="@+id/navigation_settings"
+        android:id="@+id/menu_board"
+        android:name="com.example.lob.UI.board.BoardFragment"
+        android:label="@string/title_board"
+        tools:layout="@layout/fragment_board" />
+    <fragment
+        android:id="@+id/menu_setting"
         android:name="com.example.lob.UI.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_setting" />
+
 </navigation>
