@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -78,9 +79,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth  googleAuth = FirebaseAuth.getInstance();
     public static Context CONTEXT;
     private  FirebaseUser  currentUser = googleAuth.getCurrentUser();
-    TextView usermail;
-    ImageView userImg;
-    ImageView butoon_logout;
     Toolbar toolbar;
 
 
@@ -89,7 +87,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     private CalendarFragment calendarFragment = new CalendarFragment();
     private CookingFragment cookingFragment = new CookingFragment();
     private FavoriteFragment favoriteFragment = new FavoriteFragment();
-
     private DrawerLayout mDrawerLayout;
     private Context context = this;
 
@@ -104,57 +101,21 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
         CONTEXT=this;
         setContentView(R.layout.user);
-        butoon_logout=findViewById(R.id.button_logout);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         NavigationView navView_toolbar = findViewById(R.id.navView);
-        userImg=findViewById(R.id.userImg);
-        usermail=findViewById(R.id.userEmail);
 
         onRestart();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar); //툴바설정
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
-
-//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(MenuItem menuItem) {
-//                menuItem.setChecked(true);
-//                mDrawerLayout.closeDrawers();
-//
-//                int id = menuItem.getItemId();
-//                String title = menuItem.getTitle().toString();
-//
-//                if(id == R.id.nav_refrigerator){
-//                    Toast.makeText(context, title + ": 계정 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
-//                }
-//                else if(id == R.id.nav_basket){
-//                    Toast.makeText(context, title + ": 설정 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
-//                }
-//                else if(id == R.id.nav_calendar){
-//                    Toast.makeText(context, title + ": 로그아웃 시도중", Toast.LENGTH_SHORT).show();
-//                }
-//
-//                return true;
-//            }
-//        });
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
-        butoon_logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent1=new Intent(UserActivity.this, MainActivity.class);
-                startActivity(intent1);
-                finish();
-            }
-        });
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
         NavigationUI.setupWithNavController(navView, navController);
+
+
 
     }
 
@@ -163,23 +124,15 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
             case android.R.id.home:{ // 왼쪽 상단 버튼 눌렀을 때
                 mDrawerLayout.openDrawer(GravityCompat.START);
+               ImageView userProfile = mDrawerLayout.findViewById(R.id.userProfile);
+               TextView userEmail = mDrawerLayout.findViewById(R.id.userEmail);
+                updateProfile(userProfile,userEmail);
                 return true;
             }
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-       // switch (requestCode) {
-       //     case PICK_FROM_ALBUM: { // 코드 일치
-        //        storage=new Storage();
-         //       storage.UploadProfile2( getPath(data.getData()),currentUser.getUid());
-          //      onResume();
-         //   }
-
-    }
     public String getPath(Uri uri ){
         String [] proj ={MediaStore.Images.Media.DATA};
         Cursor cursor =null;
@@ -199,9 +152,15 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onStart() {
         super.onStart();
-        if(currentUser!=null){
-            usermail.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
+    }
+    @Override
+    public synchronized  void onResume() {
+        super.onResume();
+    }
 
+    public  void updateProfile(final  ImageView imageView , final  TextView textView) {
+        if(currentUser!=null){
+            textView.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
             storageReference=firebaseStorage.getReference().child("/profile/"+currentUser.getUid());
             storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
@@ -211,7 +170,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                         Glide.with(UserActivity.this)
                                 .load(task.getResult())
                                 .apply(RequestOptions.circleCropTransform())
-                                .into(userImg);
+                                .into(imageView);
 
                     }
                 }
@@ -225,27 +184,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
 
-        }    }
-    @Override
-    public synchronized  void onResume() {
-        super.onResume();
-        updateProfile();
-    }
-
-    public  void updateProfile(){
-        if(currentUser!=null){
-            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if(task.isSuccessful()){
-                        Log.e("isTrue","zxczczxczxczxc");
-                        Glide.with(UserActivity.this)
-                                .load(task.getResult())
-                                .apply(RequestOptions.circleCropTransform())
-                                .into(userImg);
-                    }
-                }
-            });
         }
     }
     private Uri getURLForResource(int resId) {
@@ -256,6 +194,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.e("zxczczxc","aaa");
         return false;
     }
 }

@@ -43,10 +43,7 @@ public class SettingsFragment extends Fragment {
     public static Context CONTEXT;
     Button settingButton_mlkit;
     private FirebaseUser currentUser=null;
-    private SettingsViewModel settingsViewModel;
-    private String pathUri;
     private static final int PICK_FROM_ALBUM=1;
-    private Uri imageUri;
     Button settingButton_userImg;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -56,26 +53,21 @@ public class SettingsFragment extends Fragment {
         CONTEXT=this.getContext();
         ViewModelProviders.of(this).get(SettingsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_setting, container, false);
-//        final TextView textView = root.findViewById(R.id.text_settings);
         settingButton_mlkit = root.findViewById(R.id.settingButton_mlkit);
         settingButton_userImg=root.findViewById(R.id.settingButton_userImg);
         settingButton_userImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 {
+                    Log.e("dsdsds","sdasdasd");
                     show();
+
                 }
             }
         });
         settingButton_mlkit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseVisionImageMetadata metadata = new FirebaseVisionImageMetadata.Builder()
-                        .setWidth(480)   // 480x360 is typically sufficient for
-                        .setHeight(360)  // image recognition
-                        .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
-                        .build();
-
             }
         });
 

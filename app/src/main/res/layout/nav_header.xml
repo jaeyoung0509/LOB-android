@@ -9,11 +9,9 @@
     >
 
     <ImageView
-
-        android:layout_width="1dp"
-        android:src="@mipmap/ic_launcher_round"
+        android:id="@+id/userProfile"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="2"
         />
 
     <TextView
@@ -26,6 +24,7 @@
         android:textSize="30sp"/>
 
     <TextView
+        android:id="@+id/userEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="info@naver.com"/>
