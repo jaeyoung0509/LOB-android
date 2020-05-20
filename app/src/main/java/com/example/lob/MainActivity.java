@@ -2,6 +2,7 @@ package com.example.lob;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 
 import android.content.Intent;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int Google_RC_SIGN_IN = 9001;
     private  GoogleSignInClient googleSignInClient = null;
     private FirebaseAuth mAuth;
-
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        toolbar = (Toolbar) findViewById(R.id.toolbar); //툴바설정
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         signInGoogleButton = findViewById(R.id.signInGoogleButton);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
