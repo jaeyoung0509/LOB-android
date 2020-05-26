@@ -115,7 +115,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         }
         return name;
     }
-
     @Override
     public void onStart() {
         super.onStart();
