@@ -30,8 +30,8 @@
         tools:layout="@layout/fragment_board" />
     <fragment
         android:id="@+id/menu_setting"
-        android:name="com.example.lob.UI.settings.SettingsFragment"
-        android:label="@string/title_settings"
+        android:name="com.example.lob.UI.setting.SettingFragment"
+        android:label="@string/title_setting"
         tools:layout="@layout/fragment_setting" />
     <fragment
         android:id="@+id/nav_home"

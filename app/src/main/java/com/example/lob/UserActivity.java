@@ -2,43 +2,21 @@ package com.example.lob;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.lob.DTO.UserDto;
 
 import com.example.lob.Service.Storage;
-import com.example.lob.UI.basket.BasketFragment;
-import com.example.lob.UI.board.BoardFragment;
-import com.example.lob.UI.calendar.CalendarFragment;
-import com.example.lob.UI.consumption.ConsumptionFragment;
-import com.example.lob.UI.cooking.CookingFragment;
-import com.example.lob.UI.diet.DietFragment;
-import com.example.lob.UI.favorite.FavoriteFragment;
-import com.example.lob.UI.home.HomeFragment;
-import com.example.lob.UI.refrigerator.RefrigeratorFragment;
-import com.example.lob.UI.settings.SettingsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -50,28 +28,18 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.content.CursorLoader;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class UserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private Uri userProfile = null;
     private FirebaseStorage firebaseStorage=FirebaseStorage.getInstance();
     private  Storage storage;
     private StorageReference storageReference;
@@ -92,8 +60,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         setTheme(android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         super.onCreate(savedInstanceState);
-
-
         CONTEXT=this;
         setContentView(R.layout.user);
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -119,9 +85,15 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
             case android.R.id.home:{ // 왼쪽 상단 버튼 눌렀을 때
                 mDrawerLayout.openDrawer(GravityCompat.START);
-               ImageView userProfile = mDrawerLayout.findViewById(R.id.userProfile);
-               TextView userEmail = mDrawerLayout.findViewById(R.id.userEmail);
-                updateProfile(userProfile,userEmail);
+               ImageView userImage = mDrawerLayout.findViewById(R.id.userProfile);
+              TextView userEmail = mDrawerLayout.findViewById(R.id.userEmail);
+              userEmail.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
+              if(userProfile !=null){
+                  Glide.with(UserActivity.this)
+                          .load(userProfile)
+                          .apply(RequestOptions.circleCropTransform())
+                          .into(userImage);
+              }
                 return true;
             }
         }
@@ -147,26 +119,41 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onStart() {
         super.onStart();
-    }
-    @Override
-    public synchronized  void onResume() {
-        super.onResume();
-    }
-
-    public  void updateProfile(final  ImageView imageView , final  TextView textView) {
         if(currentUser!=null){
-            textView.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
             storageReference=firebaseStorage.getReference().child("/profile/"+currentUser.getUid());
             storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if(task.isSuccessful()){
-                        Log.e("isTrue","zxczczxczxczxc");
-                        Glide.with(UserActivity.this)
-                                .load(task.getResult())
-                                .apply(RequestOptions.circleCropTransform())
-                                .into(imageView);
+                        userProfile=task.getResult();
+                    } else userProfile= null;
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Storage storage = new Storage();
+                    Uri drawablePath = getURLForResource(R.drawable.normal_profile);
+                    storage.UploadProfile(drawablePath,currentUser.getUid());
+                    onResume();
+                }
+            });
 
+        }
+    }
+    @Override
+    public synchronized  void onResume() {
+        super.onResume();
+        updateProfile();
+    }
+
+    public  void updateProfile(){
+        if(currentUser!=null){
+            storageReference=firebaseStorage.getReference().child("/profile/"+currentUser.getUid());
+            storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                            userProfile=task.getResult();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
