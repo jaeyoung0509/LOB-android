@@ -1,11 +1,13 @@
 package com.example.lob;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.opengl.Visibility;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -107,26 +109,32 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
                 switch (item.getItemId()){
+
                     case R.id.menu_home:
                         Log.e("asdasdasd", (String) item.getTitle());
+                        mDrawerLayout.closeDrawers();
                         transaction.replace(R.id.fragment_container,homeFragment).commitAllowingStateLoss();
                         break;
                     case R.id.menu_consumption:
+                        mDrawerLayout.closeDrawers();
                         Log.e("asdasdasd", (String) item.getTitle());
 
                         transaction.replace(R.id.fragment_container,consumptionFragment).commitAllowingStateLoss();
                         break;
                     case R.id.menu_diet:
+                        mDrawerLayout.closeDrawers();
                         Log.e("asdasdasd", (String) item.getTitle());
 
                         transaction.replace(R.id.fragment_container,dietFragment).commitAllowingStateLoss();
                         break;
                     case R.id.menu_board:
+                        mDrawerLayout.closeDrawers();
                         Log.e("asdasdasd", (String) item.getTitle());
 
                         transaction.replace(R.id.fragment_container,boardFragment).commitAllowingStateLoss();
                         break;
                     case R.id.menu_setting:
+                        mDrawerLayout.closeDrawers();
                         Log.e("asdasdasd", (String) item.getTitle());
 
                         transaction.replace(R.id.fragment_container,settingFragment).commitAllowingStateLoss();
@@ -146,6 +154,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
             case android.R.id.home:{ // 왼쪽 상단 버튼 눌렀을 때
                 mDrawerLayout.openDrawer(GravityCompat.START);
+
                 ImageView userImage = mDrawerLayout.findViewById(R.id.userProfile);
               TextView userEmail = mDrawerLayout.findViewById(R.id.userEmail);
               userEmail.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
@@ -203,7 +212,14 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public synchronized  void onResume() {
         super.onResume();
+        final  ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("ProgressDialog running...");
+        progressDialog.setCancelable(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+        progressDialog.show();
         updateProfile();
+        progressDialog.dismiss();
+
     }
 
     public  void updateProfile(){
@@ -234,10 +250,10 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
     }
 }
-
 

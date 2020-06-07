@@ -35,7 +35,6 @@ public class SettingFragment extends Fragment {
     public static Context CONTEXT;
     View root;
     private FirebaseUser currentUser=null;
-    private SettingViewModel settingsViewModel;
     private String pathUri;
     private static final int PICK_FROM_ALBUM=1;
     private Uri imageUri;
