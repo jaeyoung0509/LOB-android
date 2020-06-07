@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,10 +22,12 @@ import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
+import com.google.firebase.ml.vision.text.FirebaseVisionCloudTextRecognizerOptions;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Receiptrecognition extends AppCompatActivity {
@@ -33,7 +36,6 @@ public class Receiptrecognition extends AppCompatActivity {
     private TextView receipt_display;
     static final int REQUEST_RECEiPT_IMAGE = 1;
     private Bitmap imageBitmap = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +83,11 @@ public class Receiptrecognition extends AppCompatActivity {
         FirebaseVisionImage firebaseVisionImage;
         firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
         FirebaseVisionTextRecognizer   detector = FirebaseVision.getInstance()
-                .getOnDeviceTextRecognizer();
+                .getCloudTextRecognizer();
+        FirebaseVisionCloudTextRecognizerOptions options = new FirebaseVisionCloudTextRecognizerOptions.Builder()
+                .setLanguageHints(Arrays.asList("en", "hi"))
+                .build();
+
         final Task<FirebaseVisionText> result=
                 detector.processImage(firebaseVisionImage)
                 .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {

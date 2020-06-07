@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.loader.content.CursorLoader;
 
 import com.example.lob.R;
+import com.example.lob.Receiptrecognition;
 import com.example.lob.Service.Storage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,13 +33,14 @@ public class SettingFragment extends Fragment {
     private Storage storage;
     private FirebaseAuth googleAuth = null;
     public static Context CONTEXT;
-
+    View root;
     private FirebaseUser currentUser=null;
     private SettingViewModel settingsViewModel;
     private String pathUri;
     private static final int PICK_FROM_ALBUM=1;
     private Uri imageUri;
     Button settingButton_userImg;
+    Button testet;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -46,7 +48,16 @@ public class SettingFragment extends Fragment {
         currentUser = googleAuth.getCurrentUser();
         CONTEXT=this.getContext();
         ViewModelProviders.of(this).get(SettingViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_setting, container, false);
+
+         root = inflater.inflate(R.layout.fragment_setting, container, false);
+        testet=root.findViewById(R.id.testtest);
+        testet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent asdasd = new Intent(root.getContext(), Receiptrecognition.class);
+                startActivity(asdasd);
+            }
+        });
         settingButton_userImg=root.findViewById(R.id.settingButton_userImg);
         settingButton_userImg.setOnClickListener(new View.OnClickListener() {
             @Override

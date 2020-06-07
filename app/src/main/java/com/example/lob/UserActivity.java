@@ -5,11 +5,15 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Layout;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +21,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import com.example.lob.Service.Storage;
+import com.example.lob.UI.board.BoardFragment;
+import com.example.lob.UI.consumption.ConsumptionFragment;
+import com.example.lob.UI.diet.DietFragment;
+import com.example.lob.UI.home.HomeFragment;
+import com.example.lob.UI.setting.SettingFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -33,22 +42,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.content.CursorLoader;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+
 public class UserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Uri userProfile = null;
     private FirebaseStorage firebaseStorage=FirebaseStorage.getInstance();
-    private  Storage storage;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private HomeFragment homeFragment = new HomeFragment();
+    private DietFragment dietFragment = new DietFragment();
+
+    private SettingFragment settingFragment = new SettingFragment();
+    private BoardFragment boardFragment = new BoardFragment();
+    private ConsumptionFragment consumptionFragment = new ConsumptionFragment();
+
+
     private StorageReference storageReference;
     private static final int PICK_FROM_ALBUM=1;
     private FirebaseAuth  googleAuth = FirebaseAuth.getInstance();
     public static Context CONTEXT;
     private  FirebaseUser  currentUser = googleAuth.getCurrentUser();
     Toolbar toolbar;
-
+    Fragment fragment;
 
     private DrawerLayout mDrawerLayout;
     private Context context = this;
@@ -62,20 +84,59 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         CONTEXT=this;
         setContentView(R.layout.user);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
         NavigationView navView_toolbar = findViewById(R.id.navView);
-
-        onRestart();
+        onStart();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar); //툴바설정
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, homeFragment).commitAllowingStateLoss();
 
-        NavigationUI.setupWithNavController(navView, navController);
-        NavigationUI.setupWithNavController(navView_toolbar, navController);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.nav_view);
+
+
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                switch (item.getItemId()){
+                    case R.id.menu_home:
+                        Log.e("asdasdasd", (String) item.getTitle());
+                        transaction.replace(R.id.fragment_container,homeFragment).commitAllowingStateLoss();
+                        break;
+                    case R.id.menu_consumption:
+                        Log.e("asdasdasd", (String) item.getTitle());
+
+                        transaction.replace(R.id.fragment_container,consumptionFragment).commitAllowingStateLoss();
+                        break;
+                    case R.id.menu_diet:
+                        Log.e("asdasdasd", (String) item.getTitle());
+
+                        transaction.replace(R.id.fragment_container,dietFragment).commitAllowingStateLoss();
+                        break;
+                    case R.id.menu_board:
+                        Log.e("asdasdasd", (String) item.getTitle());
+
+                        transaction.replace(R.id.fragment_container,boardFragment).commitAllowingStateLoss();
+                        break;
+                    case R.id.menu_setting:
+                        Log.e("asdasdasd", (String) item.getTitle());
+
+                        transaction.replace(R.id.fragment_container,settingFragment).commitAllowingStateLoss();
+                        break;
+                }
+                return true;
+            }
+        });
+
+
 
 
     }
@@ -85,7 +146,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
             case android.R.id.home:{ // 왼쪽 상단 버튼 눌렀을 때
                 mDrawerLayout.openDrawer(GravityCompat.START);
-               ImageView userImage = mDrawerLayout.findViewById(R.id.userProfile);
+                ImageView userImage = mDrawerLayout.findViewById(R.id.userProfile);
               TextView userEmail = mDrawerLayout.findViewById(R.id.userEmail);
               userEmail.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
               if(userProfile !=null){
@@ -175,7 +236,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Log.e("zxczczxc","aaa");
         return false;
     }
 }

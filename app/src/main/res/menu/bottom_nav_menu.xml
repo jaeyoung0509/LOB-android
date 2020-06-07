@@ -4,25 +4,25 @@
     <item
         android:id="@+id/menu_home"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title=  "@string/title_home" />
+        android:title=  "Home" />
 
     <item
         android:id="@+id/menu_consumption"
         android:icon="@drawable/ic_search_black_24dp"
-        android:title="@string/title_consumption" />
+        android:title="Consumption" />
 
     <item
         android:id="@+id/menu_diet"
         android:icon="@drawable/ic_restaurant_menu_black_24dp"
-        android:title="@string/title_diet" />
+        android:title="Diet" />
 
     <item
         android:id="@+id/menu_board"
         android:icon="@drawable/ic_content_paste_black_24dp"
-        android:title="@string/title_board" />
+        android:title="Board" />
     <item
         android:id="@+id/menu_setting"
         android:icon="@drawable/ic_settings_black_24dp"
-        android:title="@string/title_setting" />
+        android:title="Setting" />
 
 </menu>
