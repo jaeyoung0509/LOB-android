@@ -3,6 +3,7 @@ package com.example.lob;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -159,10 +160,17 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
               TextView userEmail = mDrawerLayout.findViewById(R.id.userEmail);
               userEmail.setText(currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"))+"님");
               if(userProfile !=null){
+            final   Intent profileSetting = new Intent(this, ProfileSetting.class);
                   Glide.with(UserActivity.this)
                           .load(userProfile)
                           .apply(RequestOptions.circleCropTransform())
                           .into(userImage);
+                  userImage.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View v) {
+                          startActivity(profileSetting);
+                      }
+                  });
               }
                 return true;
             }

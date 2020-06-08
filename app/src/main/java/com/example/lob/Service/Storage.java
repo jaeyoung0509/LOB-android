@@ -28,7 +28,6 @@ public class Storage {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                ((UserActivity)(UserActivity.CONTEXT)).onResume();
                 Log.e("asdasdad211111", String.valueOf(taskSnapshot));
 
             }

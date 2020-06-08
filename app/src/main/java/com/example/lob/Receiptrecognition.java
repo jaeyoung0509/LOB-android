@@ -27,6 +27,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,7 +56,15 @@ public class Receiptrecognition extends AppCompatActivity {
         receipt_detect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                detectTextFromImage();
+               List<String> inputReceipt =  detectTextFromImage();
+                Log.e("ssssssssssssssssssss","zzz");
+                if(inputReceipt != null){
+                    Log.e("sadasd","zzz");
+                    Log.e("asdadasdas",String.valueOf(inputReceipt.size()));
+                    for(int i =0 ; i<inputReceipt.size(); i++){
+                        Log.e("asdadasdz",inputReceipt.get(i));
+                    }
+                }
             }
         });
 
@@ -79,7 +88,8 @@ public class Receiptrecognition extends AppCompatActivity {
 
     }
 
-    private void detectTextFromImage() {
+    private  synchronized  List<String> detectTextFromImage() {
+        final List<String> input = new ArrayList<String>();
         FirebaseVisionImage firebaseVisionImage;
         firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
         FirebaseVisionTextRecognizer   detector = FirebaseVision.getInstance()
@@ -93,33 +103,20 @@ public class Receiptrecognition extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                     @Override
                     public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                        receipt_display.setText(firebaseVisionText.getText());
                         for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
-                            String blockText = block.getText();
-                            Float blockConfidence = block.getConfidence();
-                            List<RecognizedLanguage> blockLanguages = block.getRecognizedLanguages();
-                            Point[] blockCornerPoints = block.getCornerPoints();
-                            Rect blockFrame = block.getBoundingBox();
                             for (FirebaseVisionText.Line line : block.getLines()) {
-                                String lineText = line.getText();
-                                Float lineConfidence = line.getConfidence();
                                 List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
-                                Point[] lineCornerPoints = line.getCornerPoints();
-                                Rect lineFrame = line.getBoundingBox();
                                 for (FirebaseVisionText.Element element : line.getElements()) {
                                     String elementText = element.getText();
                                     Log.e("elementtext",elementText);
-                                    Float elementConfidence = element.getConfidence();
-                                    List<RecognizedLanguage> elementLanguages = element.getRecognizedLanguages();
-                                    Log.e("zxczxc", String.valueOf(elementLanguages));
-                                    Point[] elementCornerPoints = element.getCornerPoints();
-                                    Rect elementFrame = element.getBoundingBox();
+                                    input.add(element.getText());
                                 }
                             }
                         }
-
                     }
                 });
-
+        return input;
     }
 }
 

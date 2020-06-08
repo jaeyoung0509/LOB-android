@@ -7,6 +7,7 @@
 
 
    <LinearLayout
+       android:weightSum="10"
        android:orientation="vertical"
        android:layout_width="wrap_content"
        app:layout_constraintBottom_toBottomOf="parent"
@@ -16,14 +17,23 @@
        android:layout_height="wrap_content">
 
        <Button
+           android:layout_gravity="center"
+           android:layout_weight="3"
            android:text="프로필바꾸기"
            android:layout_width="wrap_content"
            android:id="@+id/settingButton_userImg"
            android:layout_height="wrap_content">
        </Button>
 
+       <LinearLayout
+           android:layout_weight="3"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"></LinearLayout>
+
        <Button
-           android:text="아낭나ㅏ"
+           android:layout_gravity="center"
+           android:layout_weight="3"
+           android:text="setting_receipt"
            android:id="@+id/testtest"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content">
