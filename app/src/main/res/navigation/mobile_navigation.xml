@@ -66,4 +66,9 @@
         android:name="com.example.lob.UI.favorite.FavoriteFragment"
         android:label="@string/title_favorite"
         tools:layout="@layout/favorite_fragment" />
+    <fragment
+        android:id="@+id/nav_boardWrite"
+        android:name="com.example.lob.UI.board.BoardWriteFragment"
+        android:label="@string/title_boardWrite"
+        tools:layout="@layout/boardwrite_fragment" />
 </navigation>

@@ -17,17 +17,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.lob.R;
+import com.example.lob.UserActivity;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class BoardFragment extends Fragment {
-
+    public static BoardFragment newInstance() {
+        return new BoardFragment();
+    }
     private BoardViewModel boardViewModel;
     private ListView boardListView;
     private BoardListAdapter Adapter;
@@ -38,11 +44,15 @@ public class BoardFragment extends Fragment {
     private final int OFFSET = 5;                  // 한 페이지마다 로드할 데이터 갯수.
     private boolean mLockListView = false;          // 데이터 불러올때 중복안되게 하기위한 변수
     private ProgressBar progressBar;                // 데이터 로딩중을 표시할 프로그레스바
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         boardViewModel =
                 ViewModelProviders.of(this).get(BoardViewModel.class);
         View root = inflater.inflate(R.layout.fragment_board, container, false);
+
+
+
         boardListView = root.findViewById(R.id.boardListView);
         boardList = new ArrayList<>();
         scrollView = root.findViewById(R.id.scrollview_board);
@@ -62,7 +72,6 @@ public class BoardFragment extends Fragment {
        // Adapter = new BoardListAdapter(getApplicationContext(),boardList);
         boardListView.setAdapter(Adapter);
 
-        Button button = root.findViewById(R.id.board_Button); /*페이지 전환버튼*/
 
         boardListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -71,13 +80,6 @@ public class BoardFragment extends Fragment {
                 return false;
             }
         });
-        boardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-
-            }
-        });
-
 
         return root;
     }

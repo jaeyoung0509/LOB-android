@@ -16,6 +16,7 @@ import android.text.Layout;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,10 +25,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import com.example.lob.Service.Storage;
+import com.example.lob.UI.basket.BasketFragment;
 import com.example.lob.UI.board.BoardFragment;
+import com.example.lob.UI.board.BoardWriteFragment;
+import com.example.lob.UI.calendar.CalendarFragment;
 import com.example.lob.UI.consumption.ConsumptionFragment;
+import com.example.lob.UI.cooking.CookingFragment;
 import com.example.lob.UI.diet.DietFragment;
+import com.example.lob.UI.favorite.FavoriteFragment;
 import com.example.lob.UI.home.HomeFragment;
+import com.example.lob.UI.refrigerator.RefrigeratorFragment;
 import com.example.lob.UI.setting.SettingFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -65,7 +72,12 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     private SettingFragment settingFragment = new SettingFragment();
     private BoardFragment boardFragment = new BoardFragment();
     private ConsumptionFragment consumptionFragment = new ConsumptionFragment();
-
+    private RefrigeratorFragment refrigeratorFragment = new RefrigeratorFragment();
+    private BasketFragment basketFragment = new BasketFragment();
+    private CalendarFragment calendarFragment = new CalendarFragment();
+    private CookingFragment cookingFragment = new CookingFragment();
+    private FavoriteFragment favoriteFragment = new FavoriteFragment();
+    private BoardWriteFragment boardWriteFragment = new BoardWriteFragment();
 
     private StorageReference storageReference;
     private static final int PICK_FROM_ALBUM=1;
@@ -74,7 +86,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     private  FirebaseUser  currentUser = googleAuth.getCurrentUser();
     Toolbar toolbar;
     Fragment fragment;
-
     private DrawerLayout mDrawerLayout;
     private Context context = this;
 
@@ -85,11 +96,12 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         setTheme(android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         super.onCreate(savedInstanceState);
-        CONTEXT=this;
+
+
+        CONTEXT = this;
         setContentView(R.layout.user);
         NavigationView navView_toolbar = findViewById(R.id.navView);
         onStart();
-
         toolbar = (Toolbar) findViewById(R.id.toolbar); //툴바설정
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawers();
@@ -99,9 +111,11 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, homeFragment).commitAllowingStateLoss();
-
+        NavigationView toolbarNavigationView = findViewById(R.id.navView);
+        if (toolbarNavigationView != null) {
+            toolbarNavigationView.setNavigationItemSelectedListener(this);
+        }
         BottomNavigationView bottomNavigationView = findViewById(R.id.nav_view);
-
 
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -109,47 +123,50 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
 
                     case R.id.menu_home:
                         Log.e("asdasdasd", (String) item.getTitle());
                         mDrawerLayout.closeDrawers();
-                        transaction.replace(R.id.fragment_container,homeFragment).commitAllowingStateLoss();
+                        transaction.replace(R.id.fragment_container, homeFragment).commitAllowingStateLoss();
                         break;
                     case R.id.menu_consumption:
                         mDrawerLayout.closeDrawers();
                         Log.e("asdasdasd", (String) item.getTitle());
 
-                        transaction.replace(R.id.fragment_container,consumptionFragment).commitAllowingStateLoss();
+                        transaction.replace(R.id.fragment_container, consumptionFragment).commitAllowingStateLoss();
                         break;
                     case R.id.menu_diet:
                         mDrawerLayout.closeDrawers();
                         Log.e("asdasdasd", (String) item.getTitle());
 
-                        transaction.replace(R.id.fragment_container,dietFragment).commitAllowingStateLoss();
+                        transaction.replace(R.id.fragment_container, dietFragment).commitAllowingStateLoss();
                         break;
                     case R.id.menu_board:
                         mDrawerLayout.closeDrawers();
                         Log.e("asdasdasd", (String) item.getTitle());
 
-                        transaction.replace(R.id.fragment_container,boardFragment).commitAllowingStateLoss();
+                        transaction.replace(R.id.fragment_container, boardFragment).commitAllowingStateLoss();
                         break;
                     case R.id.menu_setting:
                         mDrawerLayout.closeDrawers();
                         Log.e("asdasdasd", (String) item.getTitle());
 
-                        transaction.replace(R.id.fragment_container,settingFragment).commitAllowingStateLoss();
+                        transaction.replace(R.id.fragment_container, settingFragment).commitAllowingStateLoss();
                         break;
                 }
                 return true;
             }
         });
 
-
-
-
     }
 
+    public void writeClick(View view) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if(view.getId() == R.id.board_Button_Write){
+            transaction.replace(R.id.fragment_container,boardWriteFragment).commitAllowingStateLoss();
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -174,6 +191,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
               }
                 return true;
             }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -261,6 +279,45 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        switch (item.getItemId()){
+            case R.id.nav_home:
+                mDrawerLayout.closeDrawers();
+                Log.e("asdasdasd", (String) item.getTitle());
+
+                transaction.replace(R.id.fragment_container, homeFragment).commitAllowingStateLoss();
+                break;
+            case R.id.nav_refrigerator:
+                mDrawerLayout.closeDrawers();
+                Log.e("asdasdasd", (String) item.getTitle());
+
+                transaction.replace(R.id.fragment_container, refrigeratorFragment).commitAllowingStateLoss();
+                break;
+            case R.id.nav_basket:
+                mDrawerLayout.closeDrawers();
+                Log.e("asdasdasd", (String) item.getTitle());
+
+                transaction.replace(R.id.fragment_container, basketFragment).commitAllowingStateLoss();
+                break;
+            case R.id.nav_calendar:
+                mDrawerLayout.closeDrawers();
+                Log.e("asdasdasd", (String) item.getTitle());
+
+                transaction.replace(R.id.fragment_container, calendarFragment).commitAllowingStateLoss();
+                break;
+            case R.id.nav_cooking:
+                mDrawerLayout.closeDrawers();
+                Log.e("asdasdasd", (String) item.getTitle());
+
+                transaction.replace(R.id.fragment_container, cookingFragment).commitAllowingStateLoss();
+                break;
+            case R.id.nav_favorite:
+                mDrawerLayout.closeDrawers();
+                Log.e("asdasdasd", (String) item.getTitle());
+
+                transaction.replace(R.id.fragment_container, favoriteFragment).commitAllowingStateLoss();
+                break;
+        }
         return false;
     }
 }
