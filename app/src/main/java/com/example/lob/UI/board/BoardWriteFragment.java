@@ -20,6 +20,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.lob.DTO.BoardDto;
 import com.example.lob.R;
 import com.example.lob.UserActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -38,7 +40,8 @@ public class BoardWriteFragment extends Fragment {
     public static BoardWriteFragment newInstance() {
         return new BoardWriteFragment();
     }
-
+    private FirebaseAuth googleAuth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = googleAuth.getCurrentUser();
     private EditText bTitle;
     private EditText bContents;
     private Button insertButton;
@@ -58,11 +61,11 @@ public class BoardWriteFragment extends Fragment {
                 String contents = bContents.getText().toString();
                 Date currentTime = Calendar.getInstance().getTime();
 //            String date_text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일", Locale.getDefault()).format(currentTime);
-
+                String a = currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"));
                 BoardDto item = new BoardDto();
                 item.setBoard_title(title);
                 item.setBoard_contents(contents);
-                item.setBoard_writer(title);
+                item.setBoard_writer(a);
                 item.setBoard_date(currentTime);
 
                 Call<BoardDto> postCall = BAPI.post_boards(item);
