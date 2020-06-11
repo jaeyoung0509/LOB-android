@@ -3,6 +3,7 @@ package com.example.lob.UI.board;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,18 +23,31 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.lob.DTO.BoardDto;
 import com.example.lob.R;
 import com.example.lob.UserActivity;
 import com.google.android.material.navigation.NavigationView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class BoardFragment extends Fragment {
     public static BoardFragment newInstance() {
         return new BoardFragment();
     }
+    private final  String TAG = getClass().getSimpleName(); //나중에 지워도됨
+    private final String BASE_URL = "http://e15010c2514f.ngrok.io";
+    private BoardAPI BAPI;
+
     private BoardViewModel boardViewModel;
     private ListView boardListView;
     private BoardListAdapter Adapter;
@@ -57,20 +71,33 @@ public class BoardFragment extends Fragment {
         boardList = new ArrayList<>();
         scrollView = root.findViewById(R.id.scrollview_board);
 
-        boardList.add(new Board("공지사항입니다.","배현지","200=05-20"));
-        boardList.add(new Board("공지사항입니다.","배현지","200=sdafs-20"));
-        boardList.add(new Board("공지사항입니다.","asdafd","200=05-20"));
-        boardList.add(new Board("공지사항입니다.","배현지","200=05-20"));
-        boardList.add(new Board("공지사항입니다.","배현지","200=05-20"));
-        boardList.add(new Board("공지사항입니다.","배현지","200=05-20"));
-        boardList.add(new Board("공지사항입니다.","배현지","200=05-20"));
-        boardList.add(new Board("공지사항입니다.","배현지","200=05-20"));
-        boardList.add(new Board("공지사항입니다.","배현지","200=05-20"));
-        boardList.add(new Board("공지사항입니다.","배현지","200=05-20"));
-        boardList.add(new Board("공지사항입니다.","배현지","200=05-20"));
-        Adapter = new BoardListAdapter(getContext(),boardList);
-       // Adapter = new BoardListAdapter(getApplicationContext(),boardList);
-        boardListView.setAdapter(Adapter);
+        initBoardAPI(BASE_URL);
+        try {
+            Log.d(TAG,"GET");
+            Call<List<BoardDto>> getCall = BAPI.get_posts();
+            getCall.enqueue(new Callback<List<BoardDto>>() {
+                @Override
+                public void onResponse(Call<List<BoardDto>> call, Response<List<BoardDto>> response) {
+                    if( response.isSuccessful()){
+                        List<BoardDto> mList = response.body();
+                        for( BoardDto item : mList){
+                            String date_text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일", Locale.getDefault()).format(item.getBoard_date());
+                            boardList.add(new Board(item.getBoard_title(),item.getBoard_writer(),date_text));
+                            Adapter = new BoardListAdapter(getContext(),boardList);
+                            //Adapter = new BoardListAdapter(getApplicationContext(),boardList);
+                            boardListView.setAdapter(Adapter);
+                        }
+                    }else {
+                        Log.d(TAG,"Status Code : " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<BoardDto>> call, Throwable t) {
+                    Log.d(TAG,"Fail msg : " + t.getMessage());
+                }
+            });
+        }catch (Exception e){}
 
 
         boardListView.setOnTouchListener(new View.OnTouchListener() {
@@ -82,5 +109,13 @@ public class BoardFragment extends Fragment {
         });
 
         return root;
+    }
+    private void initBoardAPI(String baseUrl){
+        Log.d(TAG,"initMyAPI : " + baseUrl);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        BAPI = retrofit.create(BoardAPI.class);
     }
 }

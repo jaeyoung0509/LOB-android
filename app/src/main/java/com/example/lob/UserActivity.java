@@ -100,7 +100,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
         CONTEXT = this;
         setContentView(R.layout.user);
-        NavigationView navView_toolbar = findViewById(R.id.navView);
         onStart();
         toolbar = (Toolbar) findViewById(R.id.toolbar); //툴바설정
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -110,6 +109,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        //transaction.add(R.id.fragment_container, homeFragment.newInstance()).commit();
         transaction.replace(R.id.fragment_container, homeFragment).commitAllowingStateLoss();
         NavigationView toolbarNavigationView = findViewById(R.id.navView);
         if (toolbarNavigationView != null) {
@@ -160,6 +160,11 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         });
 
     }
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, boardFragment).commit();      // Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
+    }
 
     public void writeClick(View view) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -167,6 +172,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
             transaction.replace(R.id.fragment_container,boardWriteFragment).commitAllowingStateLoss();
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -283,38 +289,26 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
             case R.id.nav_home:
                 mDrawerLayout.closeDrawers();
-                Log.e("asdasdasd", (String) item.getTitle());
-
                 transaction.replace(R.id.fragment_container, homeFragment).commitAllowingStateLoss();
                 break;
             case R.id.nav_refrigerator:
                 mDrawerLayout.closeDrawers();
-                Log.e("asdasdasd", (String) item.getTitle());
-
                 transaction.replace(R.id.fragment_container, refrigeratorFragment).commitAllowingStateLoss();
                 break;
             case R.id.nav_basket:
                 mDrawerLayout.closeDrawers();
-                Log.e("asdasdasd", (String) item.getTitle());
-
                 transaction.replace(R.id.fragment_container, basketFragment).commitAllowingStateLoss();
                 break;
             case R.id.nav_calendar:
                 mDrawerLayout.closeDrawers();
-                Log.e("asdasdasd", (String) item.getTitle());
-
                 transaction.replace(R.id.fragment_container, calendarFragment).commitAllowingStateLoss();
                 break;
             case R.id.nav_cooking:
                 mDrawerLayout.closeDrawers();
-                Log.e("asdasdasd", (String) item.getTitle());
-
                 transaction.replace(R.id.fragment_container, cookingFragment).commitAllowingStateLoss();
                 break;
             case R.id.nav_favorite:
                 mDrawerLayout.closeDrawers();
-                Log.e("asdasdasd", (String) item.getTitle());
-
                 transaction.replace(R.id.fragment_container, favoriteFragment).commitAllowingStateLoss();
                 break;
         }
