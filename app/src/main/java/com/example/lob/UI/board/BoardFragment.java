@@ -45,7 +45,7 @@ public class BoardFragment extends Fragment {
         return new BoardFragment();
     }
     private final  String TAG = getClass().getSimpleName(); //나중에 지워도됨
-    private final String BASE_URL = "http://e15010c2514f.ngrok.io";
+    private final String BASE_URL = "http://34.64.192.192";
     private BoardAPI BAPI;
 
     private BoardViewModel boardViewModel;
@@ -89,6 +89,9 @@ public class BoardFragment extends Fragment {
                         }
                     }else {
                         Log.d(TAG,"Status Code : " + response.code());
+                        Log.i(TAG,"Status Code : " + response.code());
+                        Log.v(TAG,"Status Code : " + response.code());
+                        Log.e(TAG,"Status Code : " + response.code());
                     }
                 }
 

@@ -35,7 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BoardWriteFragment extends Fragment {
     private BoardWirteViewModel boardwriteViewModel;
     private final  String TAG = getClass().getSimpleName();
-    private final String BASE_URL = "http://e15010c2514f.ngrok.io";
+    private final String BASE_URL = "http://34.64.192.192";
     private BoardAPI BAPI;
     public static BoardWriteFragment newInstance() {
         return new BoardWriteFragment();

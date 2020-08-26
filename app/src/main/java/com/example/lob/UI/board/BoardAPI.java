@@ -11,18 +11,18 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface BoardAPI<CALL> {
-    @POST("/boards/")
+    @POST("/board/")
     Call<BoardDto> post_boards(@Body BoardDto board);
 
-    @PATCH("/boards/{pk}/")
+    @PATCH("/board/{pk}/")
     Call<BoardDto> patch_posts(@Path("pk") int pk, @Body BoardDto board);
 
-    @DELETE("/boards/{pk}/")
+    @DELETE("/board/{pk}/")
     Call<BoardDto> delete_posts(@Path("pk") int pk);
 
-    @GET("/boards/")
+    @GET("/board/")
     Call<List<BoardDto>> get_posts();
 
-    @GET("/boards/{pk}/")
+    @GET("/board/{pk}/")
     Call<BoardDto> get_post_pk(@Path("pk") int pk);
 }
