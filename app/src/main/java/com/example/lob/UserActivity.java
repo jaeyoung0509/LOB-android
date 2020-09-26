@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import com.example.lob.Service.Storage;
+import com.example.lob.UI.board.BoardUpdateFragment;
 import com.example.lob.UI.basket.BasketFragment;
 import com.example.lob.UI.board.BoardFragment;
 import com.example.lob.UI.board.BoardWriteFragment;
@@ -78,6 +79,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     private CookingFragment cookingFragment = new CookingFragment();
     private FavoriteFragment favoriteFragment = new FavoriteFragment();
     private BoardWriteFragment boardWriteFragment = new BoardWriteFragment();
+    private BoardUpdateFragment boardUpdateFragment = new BoardUpdateFragment();
 
     private StorageReference storageReference;
     private static final int PICK_FROM_ALBUM=1;

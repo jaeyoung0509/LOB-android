@@ -35,7 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BoardWriteFragment extends Fragment {
     private BoardWirteViewModel boardwriteViewModel;
     private final  String TAG = getClass().getSimpleName();
-    private final String BASE_URL = "http://34.64.192.192";
+    private final String BASE_URL = "http://34.121.58.193";
     private BoardAPI BAPI;
     public static BoardWriteFragment newInstance() {
         return new BoardWriteFragment();
@@ -88,6 +88,8 @@ public class BoardWriteFragment extends Fragment {
                         Log.d(TAG,"Fail msg : " + t.getMessage());
                     }
                 });
+                bTitle.setText(null);
+                bContents.setText(null);
             }
         });
         return root;

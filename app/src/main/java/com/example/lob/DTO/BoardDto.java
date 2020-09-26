@@ -6,7 +6,7 @@ public class BoardDto {
     private String board_title;
     private String board_contents;
     private String board_writer;
-    private int id;
+    private int board_id;
     private Date board_date;
 
     public String getBoard_title() {
@@ -33,12 +33,12 @@ public class BoardDto {
         this.board_writer = board_writer;
     }
 
-    public int getId() {
-        return id;
+    public int getBoard_id() {
+        return board_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setBoard_id(int board_id) {
+        this.board_id = board_id;
     }
 
     public Date getBoard_date() {

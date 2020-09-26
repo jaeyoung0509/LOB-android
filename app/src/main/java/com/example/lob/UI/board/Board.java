@@ -4,11 +4,13 @@ public class Board {
     String notice;
     String name;
     String date;
+    int id;
 
-    public Board(String notice, String name, String date) {
+    public Board(String notice, String name, String date,int id) {
         this.notice = notice;
         this.name = name;
         this.date = date;
+        this.id = id;
     }
 
     public String getNotice() {
@@ -33,5 +35,13 @@ public class Board {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -9,11 +9,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,7 +47,7 @@ public class BoardFragment extends Fragment {
         return new BoardFragment();
     }
     private final  String TAG = getClass().getSimpleName(); //나중에 지워도됨
-    private final String BASE_URL = "http://34.64.192.192";
+    private final String BASE_URL = "http://34.121.58.193";
     private BoardAPI BAPI;
 
     private BoardViewModel boardViewModel;
@@ -53,18 +55,14 @@ public class BoardFragment extends Fragment {
     private BoardListAdapter Adapter;
     private List<Board> boardList;
     private ScrollView scrollView;
-    private boolean lastItemVisibleFlag = false;    // 리스트 스크롤이 마지막 셀(맨 바닥)로 이동했는지 체크할 변수
-    private int page = 0;                           // 페이징변수. 초기 값은 0 이다.
-    private final int OFFSET = 5;                  // 한 페이지마다 로드할 데이터 갯수.
-    private boolean mLockListView = false;          // 데이터 불러올때 중복안되게 하기위한 변수
-    private ProgressBar progressBar;                // 데이터 로딩중을 표시할 프로그레스바
+
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         boardViewModel =
                 ViewModelProviders.of(this).get(BoardViewModel.class);
         View root = inflater.inflate(R.layout.fragment_board, container, false);
-
 
 
         boardListView = root.findViewById(R.id.boardListView);
@@ -79,22 +77,32 @@ public class BoardFragment extends Fragment {
                 @Override
                 public void onResponse(Call<List<BoardDto>> call, Response<List<BoardDto>> response) {
                     if( response.isSuccessful()){
-                        List<BoardDto> mList = response.body();
-                        for( BoardDto item : mList){
-                            String date_text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일", Locale.getDefault()).format(item.getBoard_date());
-                            boardList.add(new Board(item.getBoard_title(),item.getBoard_writer(),date_text));
+                        final List<BoardDto> mList = response.body();
+                        for(  BoardDto item : mList){
+                            String date_text = new SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault()).format(item.getBoard_date());
+                            boardList.add(new Board(item.getBoard_title(),item.getBoard_writer(),date_text,item.getBoard_id()));
                             Adapter = new BoardListAdapter(getContext(),boardList);
                             //Adapter = new BoardListAdapter(getApplicationContext(),boardList);
                             boardListView.setAdapter(Adapter);
                         }
+                        boardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Log.d(TAG,Integer.toString(boardList.get(position).getId()));
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                BoardUpdateFragment boardUpdateFragment = new BoardUpdateFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("board_id",Integer.toString(boardList.get(position).getId()));
+                                boardUpdateFragment.setArguments(bundle);
+                                fragmentTransaction.replace(R.id.fragment_container, boardUpdateFragment).commit();
+                            }
+                        });
+
                     }else {
                         Log.d(TAG,"Status Code : " + response.code());
-                        Log.i(TAG,"Status Code : " + response.code());
-                        Log.v(TAG,"Status Code : " + response.code());
-                        Log.e(TAG,"Status Code : " + response.code());
                     }
                 }
-
                 @Override
                 public void onFailure(Call<List<BoardDto>> call, Throwable t) {
                     Log.d(TAG,"Fail msg : " + t.getMessage());
