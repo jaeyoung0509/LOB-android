@@ -74,4 +74,14 @@
         android:layout_weight="1.5"
         android:text="회원탈퇴"></Button>
 
+    <Button
+        android:textSize="10dp"
+        android:id="@+id/test_socket"
+        android:background="#FFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1.5"
+        android:text="socket_test"></Button>
+
 </LinearLayout>

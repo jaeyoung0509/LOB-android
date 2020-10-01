@@ -34,8 +34,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+
 public class ProfileSetting extends AppCompatActivity {
-    Button setting_img, setting_withdrawl;
+    Button setting_img, setting_withdrawl ,test_socket;
     TextView setting_userEmail;
     ImageView setting_profileview;
     private static final int PICK_FROM_ALBUM=1;
@@ -58,6 +67,7 @@ public class ProfileSetting extends AppCompatActivity {
         setting_userEmail=findViewById(R.id.setting_userEmail);
         setting_profileview= findViewById(R.id.setting_profileview);
         setting_withdrawl = findViewById(R.id.setting_withdrawl);
+        test_socket= findViewById(R.id.test_socket);
         onStart();
 
 
@@ -87,8 +97,40 @@ public class ProfileSetting extends AppCompatActivity {
                     }
                 }
             });
-    }
+            test_socket.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final Socket socket;
+                    try {
+                        socket = IO.socket("127.0.0.1");
+                        socket.connect();
+
+                        Emitter.Listener onConnect = new Emitter.Listener() {
+                            @Override
+                            public void call(Object... args) {
+                                Log.e("client", "접속성공");
+                            }
+                        };
+                        Emitter.Listener onMessageReceived = new Emitter.Listener() {
+                            @Override
+                            public void call(Object... args) {
+                                // 전달받은 데이터는 아래와 같이 추출할 수 있습니다.
+                                JSONObject receivedData = (JSONObject) args[0];
+                                // your code...
+                            }
+                        };
+
+                        socket.on(Socket.EVENT_CONNECT, onConnect);
+                        socket.on("chat-message", onMessageReceived);
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                }
+                });
 }
+
+    }
+
 
 
     void show()
