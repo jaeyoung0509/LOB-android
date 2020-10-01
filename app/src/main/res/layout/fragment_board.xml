@@ -33,7 +33,7 @@
                 android:id="@+id/boardListView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawSelectorOnTop="false"
+                android:stackFromBottom="false"
                 android:layout_margin="10dp"
                 android:divider="#ffffff"
                 android:choiceMode="none"

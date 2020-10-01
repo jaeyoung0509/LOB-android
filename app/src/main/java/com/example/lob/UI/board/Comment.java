@@ -7,10 +7,11 @@ public class Comment {
     String comment_writer;
     String comment_date;
 
-    public Comment(String comment_contents, String comment_writer, String date_text) {
+    public Comment(String comment_contents, String comment_writer, String date_text,int comment_id) {
         this.comment_contents = comment_contents;
         this.comment_writer = comment_writer;
         this.comment_date = date_text;
+        this.comment_id = comment_id;
     }
 
 

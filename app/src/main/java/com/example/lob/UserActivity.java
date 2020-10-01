@@ -7,23 +7,19 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
-import android.opengl.Visibility;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Layout;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import com.example.lob.DTO.FoodDTO;
 import com.example.lob.Service.Storage;
 import com.example.lob.UI.board.BoardUpdateFragment;
 import com.example.lob.UI.basket.BasketFragment;
@@ -32,6 +28,7 @@ import com.example.lob.UI.board.BoardWriteFragment;
 import com.example.lob.UI.calendar.CalendarFragment;
 import com.example.lob.UI.consumption.ConsumptionFragment;
 import com.example.lob.UI.cooking.CookingFragment;
+import com.example.lob.UI.cooking.FoodAPI;
 import com.example.lob.UI.diet.DietFragment;
 import com.example.lob.UI.favorite.FavoriteFragment;
 import com.example.lob.UI.home.HomeFragment;
@@ -42,10 +39,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.otto.Bus;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -58,9 +57,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.content.CursorLoader;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
+
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class UserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -91,6 +98,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawerLayout;
     private Context context = this;
 
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +114,8 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         toolbar = (Toolbar) findViewById(R.id.toolbar); //툴바설정
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawers();
+
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -316,5 +326,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
+
+
 }
 

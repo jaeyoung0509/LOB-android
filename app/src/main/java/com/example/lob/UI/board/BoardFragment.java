@@ -32,6 +32,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,10 +81,9 @@ public class BoardFragment extends Fragment {
                         final List<BoardDto> mList = response.body();
                         for(  BoardDto item : mList){
                             String date_text = new SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault()).format(item.getBoard_date());
+
                             boardList.add(new Board(item.getBoard_title(),item.getBoard_writer(),date_text,item.getBoard_id()));
-                            Adapter = new BoardListAdapter(getContext(),boardList);
-                            //Adapter = new BoardListAdapter(getApplicationContext(),boardList);
-                            boardListView.setAdapter(Adapter);
+
                         }
                         boardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -98,6 +98,11 @@ public class BoardFragment extends Fragment {
                                 fragmentTransaction.replace(R.id.fragment_container, boardUpdateFragment).commit();
                             }
                         });
+                        boardListView.setStackFromBottom(true);
+                        Adapter = new BoardListAdapter(getContext(),boardList);
+                        Collections.reverse(boardList);
+                        Adapter.notifyDataSetChanged() ;
+                        boardListView.setAdapter(Adapter);
 
                     }else {
                         Log.d(TAG,"Status Code : " + response.code());
