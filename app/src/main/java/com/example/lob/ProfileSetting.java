@@ -102,12 +102,14 @@ public class ProfileSetting extends AppCompatActivity {
                 public void onClick(View view) {
                     final Socket socket;
                     try {
-                        socket = IO.socket("127.0.0.1");
+                        socket = IO.socket("http://127.0.0.1:10000");
                         socket.connect();
+                        Log.e("client", "123");
 
                         Emitter.Listener onConnect = new Emitter.Listener() {
                             @Override
                             public void call(Object... args) {
+                                
                                 Log.e("client", "접속성공");
                             }
                         };
@@ -119,11 +121,13 @@ public class ProfileSetting extends AppCompatActivity {
                                 // your code...
                             }
                         };
-
                         socket.on(Socket.EVENT_CONNECT, onConnect);
                         socket.on("chat-message", onMessageReceived);
-                    } catch (URISyntaxException e) {
+                    } catch (URISyntaxException e ) {
+                        Log.e("error", String.valueOf(e));
                         e.printStackTrace();
+                    }catch (Exception e){
+                        Log.e("zzzz",String.valueOf(e));
                     }
                 }
                 });

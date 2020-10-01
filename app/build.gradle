@@ -3,14 +3,13 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
-
     defaultConfig {
         applicationId "com.example.lob"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -24,6 +23,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support:multidex:1.0.3' // << 추가
+
     implementation 'com.google.firebase:firebase-ml-vision:24.0.0'
     implementation group: 'io.socket', name: 'socket.io-client', version: '1.0.0'
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
