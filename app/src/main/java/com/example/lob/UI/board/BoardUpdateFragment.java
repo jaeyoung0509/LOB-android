@@ -1,5 +1,6 @@
 package com.example.lob.UI.board;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -69,7 +70,7 @@ public class BoardUpdateFragment extends Fragment  {
     private Button commentUpdate_insertButton;
     private EditText comment_text;
     private String commnet_user;
-
+    private ProgressDialog progressDialog;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         BoardUpdateViewModel =
@@ -88,6 +89,10 @@ public class BoardUpdateFragment extends Fragment  {
         commentUpdate_insertButton = root.findViewById(R.id.commentUpdate_insertButton);
         comment_text = root.findViewById(R.id.comment_text);
         final LinearLayout linear = (LinearLayout) View.inflate(getContext(), R.layout.custom_dialog, null);
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage("잠시 기다려 주세요.");
+        progressDialog.show();
 
         currentUser_id = currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"));
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -152,8 +157,8 @@ public class BoardUpdateFragment extends Fragment  {
                                     Adapter = new CommentListAdapter(getContext(),commentList);
                                     //Adapter = new BoardListAdapter(getApplicationContext(),boardList);
                                     commentListView.setAdapter(Adapter);
-
                                 }
+                                progressDialog.dismiss();
                                 commentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
