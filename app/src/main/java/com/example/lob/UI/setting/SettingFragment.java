@@ -29,6 +29,15 @@ import com.example.lob.Service.Storage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+
 public class SettingFragment extends Fragment {
     private Storage storage;
     private FirebaseAuth googleAuth = null;
@@ -40,15 +49,42 @@ public class SettingFragment extends Fragment {
     private Uri imageUri;
     Button settingButton_userImg;
     Button testet;
+    Button setting_socket;
+    private  Socket socket;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         googleAuth = FirebaseAuth.getInstance();
         currentUser = googleAuth.getCurrentUser();
         CONTEXT=this.getContext();
+
+       final     Emitter.Listener  onConnect = new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.e("client1231313212312", "접속성공");
+
+                socket.emit("clientMessage","hi");
+                Log.e("client", "접속성공");
+            }
+        };
+        final   Emitter.Listener  onMessageReceived = new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                // 전달받은 데이터는 아래와 같이 추출할 수 있습니다.
+                try{
+                    JSONObject recieveData = (JSONObject)args[0];
+                    Log.d("TAG",recieveData.getString("msg"));
+                }catch (JSONException e){
+                    Log.e("erorr",String.valueOf(e));
+                    e.printStackTrace();
+                }
+                // your code...
+            }
+        };
         ViewModelProviders.of(this).get(SettingViewModel.class);
 
          root = inflater.inflate(R.layout.fragment_setting, container, false);
+         setting_socket = root.findViewById(R.id.setting_socket);
         testet=root.findViewById(R.id.testtest);
         testet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +100,12 @@ public class SettingFragment extends Fragment {
                 {
                     show();
                 }
+            }
+        });
+        setting_socket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
         return root;

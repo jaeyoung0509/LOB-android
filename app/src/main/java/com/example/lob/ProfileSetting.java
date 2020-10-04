@@ -55,6 +55,7 @@ public class ProfileSetting extends AppCompatActivity {
     private StorageReference storageReference;
     private FirebaseStorage firebaseStorage=FirebaseStorage.getInstance();
 
+
     private FirebaseUser currentUser = googleAuth.getCurrentUser();
 
     @Override
@@ -97,41 +98,20 @@ public class ProfileSetting extends AppCompatActivity {
                     }
                 }
             });
-            test_socket.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final Socket socket;
-                    try {
-                        socket = IO.socket("http://127.0.0.1:10000");
-                        socket.connect();
-                        Log.e("client", "123");
-
-                        Emitter.Listener onConnect = new Emitter.Listener() {
-                            @Override
-                            public void call(Object... args) {
-                                
-                                Log.e("client", "접속성공");
-                            }
-                        };
-                        Emitter.Listener onMessageReceived = new Emitter.Listener() {
-                            @Override
-                            public void call(Object... args) {
-                                // 전달받은 데이터는 아래와 같이 추출할 수 있습니다.
-                                JSONObject receivedData = (JSONObject) args[0];
-                                // your code...
-                            }
-                        };
-                        socket.on(Socket.EVENT_CONNECT, onConnect);
-                        socket.on("chat-message", onMessageReceived);
-                    } catch (URISyntaxException e ) {
-                        Log.e("error", String.valueOf(e));
-                        e.printStackTrace();
-                    }catch (Exception e){
-                        Log.e("zzzz",String.valueOf(e));
-                    }
-                }
-                });
 }
+        test_socket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("zxccccccccccccccccccc","zzzzzzzzzzzzzzzzzzzzzzz");
+
+                SocketClient socketClient = new SocketClient(1,"123123");
+                Log.e("312312cccc","zzzzzzzzzzzzzzzzzzzzzzz");
+
+                socketClient.start();
+                Log.e("zccasdascccc","zzzzzzzzzzzzzzzzzzzzzzz");
+
+            }
+        });
 
     }
 
