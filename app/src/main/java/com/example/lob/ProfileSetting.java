@@ -104,7 +104,7 @@ public class ProfileSetting extends AppCompatActivity {
             public void onClick(View view) {
                 Log.e("zxccccccccccccccccccc","zzzzzzzzzzzzzzzzzzzzzzz");
 
-                SocketClient socketClient = new SocketClient(1,"123123");
+                SocketClient socketClient = new SocketClient("123123");
                 Log.e("312312cccc","zzzzzzzzzzzzzzzzzzzzzzz");
 
                 socketClient.start();

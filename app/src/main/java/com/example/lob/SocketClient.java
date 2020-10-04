@@ -9,16 +9,14 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class SocketClient extends Thread {
-    int count ;
     String s= null;
     String host ="192.168.0.103";
     int port =9999;
     Socket socket =null;
     PrintWriter outputStream = null;
     BufferedReader inputStream = null;
-    public SocketClient(int count , String s){
+    public SocketClient(String s){
         Log.e("123123122aaaaa","123");
-        this.count=count;
         this.s=s;
     }
 
@@ -33,7 +31,7 @@ public class SocketClient extends Thread {
             outputStream = new PrintWriter(socket.getOutputStream(), true);
             Log.d("ClientThread666", "서버로 보냄.");
 
-            outputStream.print("count" + String.valueOf(count) + "s" + s);
+            outputStream.print(s);
             Log.d("ClientThread7777", "서버로 보냄.");
 
             outputStream.flush();

@@ -26,6 +26,7 @@ import androidx.loader.content.CursorLoader;
 import com.example.lob.R;
 import com.example.lob.Receiptrecognition;
 import com.example.lob.Service.Storage;
+import com.example.lob.SocketClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,6 +34,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -51,7 +54,9 @@ public class SettingFragment extends Fragment {
     Button testet;
     Button setting_socket;
     private  Socket socket;
-    public View onCreateView(@NonNull LayoutInflater inflater,
+    String input = "";
+
+    public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         googleAuth = FirebaseAuth.getInstance();
@@ -105,6 +110,18 @@ public class SettingFragment extends Fragment {
         setting_socket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                input="";
+                ArrayList<String> a= new ArrayList<String>();
+                a.add("과자");
+                a.add("하이고 왤캐 어렵냐");
+                a.add("김치");
+                for (int i =0; i< a.size(); i++){
+                   input= input +"번째"+a.get(i);
+               //     input=input+""+a.get(i)+"\t";
+                    Log.e("input is " ,input);
+                }
+                SocketClient socketClient = new SocketClient(input);
+                socketClient.start();
 
             }
         });
