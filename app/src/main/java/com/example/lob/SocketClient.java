@@ -10,8 +10,8 @@ import java.net.Socket;
 
 public class SocketClient extends Thread {
     String s= null;
-    String host ="192.168.0.103";
-    int port =9999;
+    String host ="35.225.2.236";
+    int port =80;
     Socket socket =null;
     PrintWriter outputStream = null;
     BufferedReader inputStream = null;
@@ -38,8 +38,8 @@ public class SocketClient extends Thread {
             Log.d("ClientThread", outputStream.toString());
             inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input = inputStream.readLine();
-            String [] splitdata = input.split("\t");
-            input = splitdata[splitdata.length-1];
+            Log.e("input ",input);
+            String [] splitdata = input.split(",");
             Log.d("ClientThread","받은 데이터 : "+input);
         }catch (Exception e){
             e.printStackTrace();

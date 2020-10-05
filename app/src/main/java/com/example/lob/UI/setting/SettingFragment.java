@@ -80,7 +80,7 @@ public class SettingFragment extends Fragment {
                     JSONObject recieveData = (JSONObject)args[0];
                     Log.d("TAG",recieveData.getString("msg"));
                 }catch (JSONException e){
-                    Log.e("erorr",String.valueOf(e));
+
                     e.printStackTrace();
                 }
                 // your code...
@@ -116,7 +116,7 @@ public class SettingFragment extends Fragment {
                 a.add("하이고 왤캐 어렵냐");
                 a.add("김치");
                 for (int i =0; i< a.size(); i++){
-                   input= input +"번째"+a.get(i);
+                   input= input +a.get(i)+"and";
                //     input=input+""+a.get(i)+"\t";
                     Log.e("input is " ,input);
                 }
