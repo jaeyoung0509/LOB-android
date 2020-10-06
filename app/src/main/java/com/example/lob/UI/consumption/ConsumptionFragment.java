@@ -70,7 +70,6 @@ public class ConsumptionFragment extends Fragment {
                                 Log.e("zzzzzz",String.valueOf(foodarray.get(i).getExpirationDate()));
                                 foodarray.get(i).setUser(a);
                             }
-                            Log.e("foodlist", String.valueOf(foodarray.size()));
                             Call<Void> foodInsertcall = foodAPI.post_foods(foodarray);
                             foodInsertcall.enqueue(new Callback<Void>() {
                                 @Override
@@ -96,10 +95,6 @@ public class ConsumptionFragment extends Fragment {
                         }
                     }
 
-                    @Override
-                    public void onNegativeClicked() {
-
-                    }
 
                 });
                 foodDialog.show();

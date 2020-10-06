@@ -24,7 +24,6 @@ public class FoodDialog extends Dialog {
     FoodInsertDialogListener foodInsertDialogListener;
     public interface FoodInsertDialogListener{
         void onPositiveClicked(List<FoodDTO> foodDTOList);
-        void onNegativeClicked();
     }
 
     public void setDialogListener(FoodInsertDialogListener foodInsertDialogListener){
@@ -44,7 +43,7 @@ public class FoodDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 adapterFoodInsert.addItem(new FoodDTO("",""));
-//                foodDTOS = adapterFoodInsert.getItems();
+                foodDTOS=adapterFoodInsert.getItems();
             }
         });
         food_insert.setOnClickListener(new View.OnClickListener() {
@@ -57,18 +56,15 @@ public class FoodDialog extends Dialog {
                     }
                 }
                 if (foodDTOS.size() > 0) {
-                    foodInsertDialogListener.onPositiveClicked(foodDTOS);
                 } else {
                     foodDTOS=null;
                 }
+                foodInsertDialogListener.onPositiveClicked(foodDTOS);
                 dismiss();
             }
         });
     }
     public ArrayList<FoodDTO> getFoodDTOS(){
         return (ArrayList<FoodDTO>) foodDTOS;
-    }
-    protected FoodDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
     }
 }

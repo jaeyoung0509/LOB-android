@@ -25,7 +25,6 @@ public  class AdapterFoodInsert extends BaseAdapter{
     private  Context context;
     List<FoodDTO> items = new ArrayList<FoodDTO>();
     List<FoodDTO> temporaryItems = items;
-    List<FoodDTO> realItems;
     DatePickerDialog.OnDateSetListener daateListener ;
     public AdapterFoodInsert(Context context){
         this.context= context;
@@ -43,9 +42,9 @@ public  class AdapterFoodInsert extends BaseAdapter{
         return temporaryItems.get(i);
     }
     public  List<FoodDTO> getItems(){
-        realItems= new ArrayList<FoodDTO>();
+        List<FoodDTO>  realItems= new ArrayList<FoodDTO>();
         for (int i =0 ;i<temporaryItems.size();i++){
-            realItems.set(i,temporaryItems.get(i));
+            realItems.add(new FoodDTO(temporaryItems.get(i).getFood_name(),temporaryItems.get(i).getExpirationDate()));
         }
         return  realItems;
     }
@@ -67,6 +66,8 @@ public  class AdapterFoodInsert extends BaseAdapter{
          EditText food_date = (EditText) view.findViewById(R.id.food_date);
         Button food_del = (Button) view.findViewById(R.id.food_del);
         final FoodDTO foodDTO = temporaryItems.get(position);
+        food_text.setText(foodDTO.getFood_name().toString());
+        food_date.setText(foodDTO.getExpirationDate());
         food_del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
