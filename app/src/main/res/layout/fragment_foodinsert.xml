@@ -22,14 +22,14 @@
             android:hint="음식입력"></EditText>
 
 
-        <TextView
+        <EditText
             android:layout_weight="2"
             android:id="@+id/food_date"
             android:layout_width="match_parent"
             android:inputType="date"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="날짜입력"></TextView>
+            android:hint="날짜입력"></EditText>
 
         <Button
             android:layout_weight="1"
