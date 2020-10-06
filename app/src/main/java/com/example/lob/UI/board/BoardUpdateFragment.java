@@ -1,4 +1,7 @@
 package com.example.lob.UI.board;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,9 +11,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -64,8 +69,8 @@ public class BoardUpdateFragment extends Fragment  {
     private ScrollView scrollView;
     private Button commentUpdate_insertButton;
     private EditText comment_text;
-    private Button commentUpdate_deleteButton;
-
+    private String commnet_user;
+    private ProgressDialog progressDialog;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         BoardUpdateViewModel =
@@ -83,7 +88,11 @@ public class BoardUpdateFragment extends Fragment  {
         scrollView = root.findViewById(R.id.scrollview_comment);
         commentUpdate_insertButton = root.findViewById(R.id.commentUpdate_insertButton);
         comment_text = root.findViewById(R.id.comment_text);
-        commentUpdate_deleteButton = (Button)root.findViewById(R.id.commentUpdate_deleteButton);
+        final LinearLayout linear = (LinearLayout) View.inflate(getContext(), R.layout.custom_dialog, null);
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage("잠시 기다려 주세요.");
+        progressDialog.show();
 
         currentUser_id = currentUser.getEmail().substring(0,currentUser.getEmail().lastIndexOf("@"));
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -130,10 +139,10 @@ public class BoardUpdateFragment extends Fragment  {
                     }
                 });
                 initCommentAPI(BASE_URL);
-                Call<List<CommentDTO>> getCal = CAPI.get_comment();
+                final Call<List<CommentDTO>> getCal = CAPI.get_comment();
                 getCal.enqueue(new Callback<List<CommentDTO>>() {
                     @Override
-                    public void onResponse(Call<List<CommentDTO>> call, Response<List<CommentDTO>> response) {
+                    public void onResponse(Call<List<CommentDTO>> call, final Response<List<CommentDTO>> response) {
                         if( response.isSuccessful()){
                             Log.d("commend",Integer.toString(board_id_true));
                             List<CommentDTO> mList = response.body();
@@ -144,16 +153,56 @@ public class BoardUpdateFragment extends Fragment  {
                                     Log.d("commend2",Integer.toString(board_id_true));
                                     String date_text = new SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault()).format(item.getComment_date());
                                     Log.d("1",item.getComment_contents()+item.getComment_writer()+date_text);
-                                    commentList.add(new Comment(item.getComment_contents(),item.getComment_writer(),date_text));
+                                    commentList.add(new Comment(item.getComment_contents(),item.getComment_writer(),date_text,item.getComment_id()));
                                     Adapter = new CommentListAdapter(getContext(),commentList);
                                     //Adapter = new BoardListAdapter(getApplicationContext(),boardList);
                                     commentListView.setAdapter(Adapter);
-
                                 }
+                                progressDialog.dismiss();
                                 commentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                                         Log.d("commentlist",Integer.toString(commentList.get(position).getComment_id()));
+                                        final int comment_id_t = commentList.get(position).getComment_id();
+                                        commnet_user = commentList.get(position).getComment_writer();
+                                        if(commnet_user.equals(currentUser_id)){
+                                            new AlertDialog.Builder(getContext())
+                                                    .setView(linear)
+                                                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                                            Call<CommentDTO> deleteCall = CAPI.delete_comment(comment_id_t);
+                                                            deleteCall.enqueue(new Callback<CommentDTO>() {
+                                                                @Override
+                                                                public void onResponse(Call<CommentDTO> call, Response<CommentDTO> response) {
+                                                                    if(response.isSuccessful()){
+                                                                        Log.d("TAG","삭제 완료");
+                                                                    }else {
+                                                                        Log.d("TAG","Status Code : " + response.code());
+                                                                    }
+                                                                }
+
+                                                                @Override
+                                                                public void onFailure(Call<CommentDTO> call, Throwable t) {
+                                                                    Log.d("TAG","Fail msg : " + t.getMessage());
+                                                                }
+                                                            });
+                                                            refresh();
+                                                            Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                                            dialog.dismiss();
+                                                        }
+                                                    })
+                                                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                                            refresh();
+                                                            Toast.makeText(getContext(), "취소되었습니다.", Toast.LENGTH_SHORT).show();
+                                                            dialog.dismiss();
+                                                        }
+                                                    })
+                                                    .show();
+                                            //CustomDialog customDialog = new CustomDialog(getContext());
+                                           // customDialog.callFunction(commentList.get(position).getComment_id(),board_id_true);
+
+                                        }
                                     }
                                 });
                             }
@@ -173,28 +222,6 @@ public class BoardUpdateFragment extends Fragment  {
 
 
         }
-//        commentUpdate_deleteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-////                Call<CommentDTO> deleteCall = CAPI.delete_comment(2);
-////                deleteCall.enqueue(new Callback<CommentDTO>() {
-////                    @Override
-////                    public void onResponse(Call<CommentDTO> call, Response<CommentDTO> response) {
-////                        if(response.isSuccessful()){
-////                            Log.d("commentDe","삭제 완료");
-////                        }else {
-////                            Log.d("commentDe","Status Code : " + response.code());
-////                        }
-////                    }
-////
-////                    @Override
-////                    public void onFailure(Call<CommentDTO> call, Throwable t) {
-////                        Log.d("commentDe","Fail msg : " + t.getMessage());
-////                    }
-////                });
-//            }
-//        });
         commentUpdate_insertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,6 +241,8 @@ public class BoardUpdateFragment extends Fragment  {
                     public void onResponse(Call<CommentDTO> call, Response<CommentDTO> response) {
                         if(response.isSuccessful()){
                             Log.d("comment","등록 완료");
+                            comment_text.setText(null);
+                            refresh();
                         }else {
                             Log.d("comment","Status Code : " + response.code());
                             Log.d("comment",response.errorBody().toString());
@@ -226,9 +255,6 @@ public class BoardUpdateFragment extends Fragment  {
                         Log.d("comment","Fail msg : " + t.getMessage());
                     }
                 });
-                comment_text.setText(null);
-                BoardFragment boardFragment = new BoardFragment();
-                fragmentTransaction.replace(R.id.fragment_container, boardFragment).commit();
             }
         });
         board_updateButton.setOnClickListener(new View.OnClickListener() {
@@ -266,7 +292,12 @@ public class BoardUpdateFragment extends Fragment  {
         });
         return root;
     }
-    private void initBoardAPI(String baseUrl){
+    private void refresh(){
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.detach(this).attach(this).commit();
+
+    }    private void initBoardAPI(String baseUrl){
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)

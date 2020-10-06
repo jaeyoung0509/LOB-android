@@ -1,4 +1,4 @@
-package com.example.lob;
+package com.example.lob.Service;
 
 import android.util.Log;
 
@@ -29,7 +29,7 @@ public class SocketClient extends Thread {
             Log.d("ClientThread2", "서버로 보냄.");
 
             outputStream = new PrintWriter(socket.getOutputStream(), true);
-            Log.d("ClientThread666", "서버로 보냄.");
+            Log.d("Client   Thread666", "서버로 보냄.");
 
             outputStream.print(s);
             Log.d("ClientThread7777", "서버로 보냄.");

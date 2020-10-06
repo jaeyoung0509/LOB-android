@@ -24,20 +24,17 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.loader.content.CursorLoader;
 
 import com.example.lob.R;
-import com.example.lob.Receiptrecognition;
+import com.example.lob.Activity.Receiptrecognition;
 import com.example.lob.Service.Storage;
-import com.example.lob.SocketClient;
+import com.example.lob.Service.SocketClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.List;
 
-import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
@@ -159,6 +156,7 @@ public class SettingFragment extends Fragment {
 
     void show()
     {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle("Profile 설정");
         builder.setMessage("안녕하세요 프로필을 설정해주세요");

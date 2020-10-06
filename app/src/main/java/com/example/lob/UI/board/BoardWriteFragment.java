@@ -7,19 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.lob.DTO.BoardDto;
 import com.example.lob.R;
-import com.example.lob.UserActivity;
+import com.example.lob.Activity.UserActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -35,7 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BoardWriteFragment extends Fragment {
     private BoardWirteViewModel boardwriteViewModel;
     private final  String TAG = getClass().getSimpleName();
-    private final String BASE_URL = "http://34.121.58.193";
+    private final String BASE_URL = "http://34.123.194.45";
     private BoardAPI BAPI;
     public static BoardWriteFragment newInstance() {
         return new BoardWriteFragment();
