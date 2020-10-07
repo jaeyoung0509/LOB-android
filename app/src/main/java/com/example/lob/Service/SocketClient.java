@@ -15,25 +15,20 @@ public class SocketClient extends Thread {
     Socket socket =null;
     PrintWriter outputStream = null;
     BufferedReader inputStream = null;
-    public SocketClient(String s){
-        Log.e("123123122aaaaa","123");
+    public  SocketClient(String s){
         this.s=s;
     }
 
+    @Override
+    public synchronized void start() {
+        super.start();
+    }
+
     public void run(){
-        Log.e("1a","123");
         try{
-            Log.d("ClientThread3", "서버로 보냄.");
-
             socket=new Socket(host,port);
-            Log.d("ClientThread2", "서버로 보냄.");
-
             outputStream = new PrintWriter(socket.getOutputStream(), true);
-            Log.d("Client   Thread666", "서버로 보냄.");
-
             outputStream.print(s);
-            Log.d("ClientThread7777", "서버로 보냄.");
-
             outputStream.flush();
             Log.d("ClientThread", outputStream.toString());
             inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));

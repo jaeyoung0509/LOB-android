@@ -156,7 +156,6 @@ public class SettingFragment extends Fragment {
 
     void show()
     {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle("Profile 설정");
         builder.setMessage("안녕하세요 프로필을 설정해주세요");

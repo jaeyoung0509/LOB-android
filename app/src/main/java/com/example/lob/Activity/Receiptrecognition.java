@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.lob.R;
+import com.example.lob.Service.SocketClient;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.ml.vision.FirebaseVision;
@@ -33,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Receiptrecognition extends AppCompatActivity {
+    private String inputString = null;
     private Button receipt_caputure, receipt_detect;
     private ImageView receipt_image;
     private TextView receipt_display;
@@ -57,14 +59,10 @@ public class Receiptrecognition extends AppCompatActivity {
         receipt_detect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               List<String> inputReceipt =  detectTextFromImage();
-                Log.e("ssssssssssssssssssss","zzz");
+                String inputReceipt =  detectTextFromImage();
                 if(inputReceipt != null){
-                    Log.e("sadasd","zzz");
-                    Log.e("asdadasdas",String.valueOf(inputReceipt.size()));
-                    for(int i =0 ; i<inputReceipt.size(); i++){
-                        Log.e("asdadasdz",inputReceipt.get(i));
-                    }
+                    SocketClient socketClient = new SocketClient(inputReceipt);
+                    socketClient.start();
                 }
             }
         });
@@ -89,7 +87,8 @@ public class Receiptrecognition extends AppCompatActivity {
 
     }
 
-    private  synchronized  List<String> detectTextFromImage() {
+    private  synchronized  String detectTextFromImage() {
+        inputString = new String();
         final List<String> input = new ArrayList<String>();
         FirebaseVisionImage firebaseVisionImage;
         firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
@@ -110,14 +109,13 @@ public class Receiptrecognition extends AppCompatActivity {
                                 List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
                                 for (FirebaseVisionText.Element element : line.getElements()) {
                                     String elementText = element.getText();
-                                    Log.e("elementtext",elementText);
-                                    input.add(element.getText());
+                                    inputString+=elementText;
                                 }
                             }
                         }
                     }
                 });
-        return input;
+        return inputString;
     }
 }
 
