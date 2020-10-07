@@ -1,6 +1,7 @@
 package com.example.lob.Service;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -17,16 +18,19 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class SocketClient extends Thread {
-    Activity activity;
+    Handler handler;
+    Runnable runnable;
+    Context context;
     String s= null;
     String host ="35.225.2.236";
     int port =80;
     Socket socket =null;
     PrintWriter outputStream = null;
     BufferedReader inputStream = null;
-    public  SocketClient(String s , Activity activity){
+
+    public  SocketClient(String s , Context context){
         this.s=s;
-        this.activity = activity;
+        this.context = context;
     }
 
     @Override
@@ -45,16 +49,17 @@ public class SocketClient extends Thread {
             String input = inputStream.readLine();
             Log.e("input ",input);
             String [] splitdata = input.split(",");
+            Log.e("splitdata", String.valueOf(splitdata));
             ArrayList<FoodDTO> foodDTOS = new ArrayList<FoodDTO>() ;
             for(int i= 0; i<splitdata.length; i++){
-                            foodDTOS.add(new FoodDTO(splitdata[i], ""));
+                Log.e("splitdata", String.valueOf(splitdata[i]));
+                foodDTOS.add(new FoodDTO(splitdata[i], ""));
             }
-            Log.d("ClientThread","받은 데이터 : "+input);
             //dialg
-            if(activity!=null){
-                FoodDialog foodDialog = new FoodDialog( activity);
+            if(context!=null){
+                FoodDialog foodDialog = new FoodDialog(context);
                 foodDialog.setFoodDTOS(foodDTOS);
-                foodDialog.show();
+               foodDialog.show();
 
             }
         }catch (Exception e){

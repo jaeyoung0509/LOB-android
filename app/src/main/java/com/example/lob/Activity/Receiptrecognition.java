@@ -78,7 +78,7 @@ public class Receiptrecognition extends AppCompatActivity {
                 mhandler = new Handler();
                 mhandler.post(runnable);
                 if(inputReceipt != null){
-                    SocketClient socketClient = new SocketClient(receipt_display.getText().toString(),  receiptActivity);
+                    SocketClient socketClient = new SocketClient(receipt_display.getText().toString(),  getApplicationContext());
                     socketClient.start();
                 }
             }
