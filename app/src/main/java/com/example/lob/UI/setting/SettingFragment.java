@@ -59,32 +59,7 @@ public class SettingFragment extends Fragment {
         googleAuth = FirebaseAuth.getInstance();
         currentUser = googleAuth.getCurrentUser();
         CONTEXT=this.getContext();
-
-       final     Emitter.Listener  onConnect = new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.e("client1231313212312", "접속성공");
-
-                socket.emit("clientMessage","hi");
-                Log.e("client", "접속성공");
-            }
-        };
-        final   Emitter.Listener  onMessageReceived = new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                // 전달받은 데이터는 아래와 같이 추출할 수 있습니다.
-                try{
-                    JSONObject recieveData = (JSONObject)args[0];
-                    Log.d("TAG",recieveData.getString("msg"));
-                }catch (JSONException e){
-
-                    e.printStackTrace();
-                }
-                // your code...
-            }
-        };
         ViewModelProviders.of(this).get(SettingViewModel.class);
-
          root = inflater.inflate(R.layout.fragment_setting, container, false);
          setting_socket = root.findViewById(R.id.setting_socket);
         testet=root.findViewById(R.id.testtest);
@@ -107,6 +82,7 @@ public class SettingFragment extends Fragment {
         setting_socket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
                 input="";
                 ArrayList<String> a= new ArrayList<String>();
                 a.add("과자");
@@ -119,6 +95,8 @@ public class SettingFragment extends Fragment {
                 }
                 SocketClient socketClient = new SocketClient(input);
                 socketClient.start();
+
+                 */
 
             }
         });

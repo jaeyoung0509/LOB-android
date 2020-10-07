@@ -67,4 +67,7 @@ public class FoodDialog extends Dialog {
     public ArrayList<FoodDTO> getFoodDTOS(){
         return (ArrayList<FoodDTO>) foodDTOS;
     }
+    public  void  setFoodDTOS(ArrayList<FoodDTO> foodDTOS){
+        this.foodDTOS = foodDTOS;
+    }
 }

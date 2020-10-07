@@ -3,12 +3,14 @@ package com.example.lob.Activity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -35,11 +37,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Receiptrecognition extends AppCompatActivity {
+    Activity receiptActivity = this;
     private String inputString = null;
     private Button receipt_caputure, receipt_detect;
     private ImageView receipt_image;
     private TextView receipt_display;
+    String inputReceipt = null;
     static final int REQUEST_RECEiPT_IMAGE = 1;
+    Handler handler;
+    Runnable runnable;
     private Bitmap imageBitmap = null;
     Handler mhandler;
     @Override
@@ -57,22 +63,24 @@ public class Receiptrecognition extends AppCompatActivity {
                 dispatchTaskPictureIntent();
             }
         });
+         handler = new Handler(Looper.getMainLooper());
+         runnable= new Runnable() {
+            @Override
+            public void run() {
+                inputReceipt = new String();
+                 inputReceipt =  detectTextFromImage();
+            }
+        };
 
         receipt_detect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mhandler = new Handler();
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        String inputReceipt =  detectTextFromImage();
-                        if(inputReceipt != null){
-                            SocketClient socketClient = new SocketClient(inputReceipt);
-                            socketClient.start();
-                        }
-                    }
-                };
-                    mhandler.post(runnable);
+                mhandler.post(runnable);
+                if(inputReceipt != null){
+                    SocketClient socketClient = new SocketClient(receipt_display.getText().toString(),  receiptActivity);
+                    socketClient.start();
+                }
             }
         });
 
