@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,7 @@ public class Receiptrecognition extends AppCompatActivity {
     private TextView receipt_display;
     static final int REQUEST_RECEiPT_IMAGE = 1;
     private Bitmap imageBitmap = null;
+    Handler mhandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,11 +61,18 @@ public class Receiptrecognition extends AppCompatActivity {
         receipt_detect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String inputReceipt =  detectTextFromImage();
-                if(inputReceipt != null){
-                    SocketClient socketClient = new SocketClient(inputReceipt);
-                    socketClient.start();
-                }
+                mhandler = new Handler();
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        String inputReceipt =  detectTextFromImage();
+                        if(inputReceipt != null){
+                            SocketClient socketClient = new SocketClient(inputReceipt);
+                            socketClient.start();
+                        }
+                    }
+                };
+                    mhandler.post(runnable);
             }
         });
 
@@ -89,7 +98,6 @@ public class Receiptrecognition extends AppCompatActivity {
 
     private  synchronized  String detectTextFromImage() {
         inputString = new String();
-        final List<String> input = new ArrayList<String>();
         FirebaseVisionImage firebaseVisionImage;
         firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
         FirebaseVisionTextRecognizer   detector = FirebaseVision.getInstance()

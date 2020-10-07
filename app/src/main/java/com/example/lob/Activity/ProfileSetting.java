@@ -93,14 +93,6 @@ public class ProfileSetting extends AppCompatActivity {
         test_socket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("zxccccccccccccccccccc","zzzzzzzzzzzzzzzzzzzzzzz");
-
-                SocketClient socketClient = new SocketClient("123123");
-                Log.e("312312cccc","zzzzzzzzzzzzzzzzzzzzzzz");
-
-                socketClient.start();
-                Log.e("zccasdascccc","zzzzzzzzzzzzzzzzzzzzzzz");
-
             }
         });
 

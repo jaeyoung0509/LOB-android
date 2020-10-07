@@ -1,5 +1,7 @@
 package com.example.lob.Service;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -23,8 +25,16 @@ public class SocketClient extends Thread {
     public synchronized void start() {
         super.start();
     }
+    Handler handler = new Handler(Looper.getMainLooper());
+    Runnable runnable= new Runnable() {
+        @Override
+        public void run() {
+        }
+    };
 
-    public void run(){
+
+    public void run() {
+
         try{
             socket=new Socket(host,port);
             outputStream = new PrintWriter(socket.getOutputStream(), true);
