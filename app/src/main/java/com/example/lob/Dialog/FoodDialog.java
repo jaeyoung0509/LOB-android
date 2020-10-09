@@ -2,6 +2,8 @@ package com.example.lob.Dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.view.KeyboardShortcutGroup;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -15,23 +17,18 @@ import com.example.lob.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
-public class FoodDialog extends Dialog {
+public class FoodDialog extends Dialog implements  Runnable{
+    Handler mhandler ;
     AdapterFoodInsert adapterFoodInsert;
     Button food_add ,food_insert;
     ListView foodIndexList;
     List<FoodDTO> foodDTOS = new ArrayList<FoodDTO>();
     FoodInsertDialogListener foodInsertDialogListener;
-    public interface FoodInsertDialogListener{
-        void onPositiveClicked(List<FoodDTO> foodDTOList);
-    }
-
-    public void setDialogListener(FoodInsertDialogListener foodInsertDialogListener){
-        this.foodInsertDialogListener = foodInsertDialogListener;
-    }
-
-    public FoodDialog(Context context){
-        super(context);
+    Context context ;
+    @Override
+    public void run() {
         setContentView(R.layout.dialog_food);
         food_insert = findViewById(R.id.food_insert);
         adapterFoodInsert = new AdapterFoodInsert(context);
@@ -64,10 +61,32 @@ public class FoodDialog extends Dialog {
             }
         });
     }
+
+    @Override
+    public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, @Nullable Menu menu, int deviceId) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    public interface FoodInsertDialogListener{
+        void onPositiveClicked(List<FoodDTO> foodDTOList);
+    }
+    public void setDialogListener(FoodInsertDialogListener foodInsertDialogListener){
+        this.foodInsertDialogListener = foodInsertDialogListener;
+    }
+    public FoodDialog(Context context){
+        super(context);
+        this.context= context;
+    }
     public ArrayList<FoodDTO> getFoodDTOS(){
         return (ArrayList<FoodDTO>) foodDTOS;
     }
     public  void  setFoodDTOS(ArrayList<FoodDTO> foodDTOS){
         this.foodDTOS = foodDTOS;
     }
+
 }
