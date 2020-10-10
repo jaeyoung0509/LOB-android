@@ -56,7 +56,6 @@ public class Receiptrecognition extends AppCompatActivity {
     Handler handler;
     Runnable runnable;
     private Bitmap imageBitmap = null;
-    Handler mhandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +64,7 @@ public class Receiptrecognition extends AppCompatActivity {
         receipt_caputure = findViewById(R.id.receipt_caputure);
         receipt_image = findViewById(R.id.receipt_image);
         receipt_display = findViewById(R.id.receipt_display);
+        receipt_display.setText("");
         receipt_detect = findViewById(R.id.receipt_detect);
 
         receipt_caputure.setOnClickListener(new View.OnClickListener() {
@@ -76,10 +76,16 @@ public class Receiptrecognition extends AppCompatActivity {
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (inputReceipt != null) {
-                    socketClient = new SocketClient(receipt_display.getText().toString(), getApplicationContext());
-                    socketClient.start();
+                try {
+                    Looper.prepare();
+                    if (!inputReceipt.equals("")) {
+                        socketClient = new SocketClient(receipt_display.getText().toString(), getApplicationContext());
+                        socketClient.start();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
+                Looper.loop();
             }
         };
 
@@ -88,9 +94,18 @@ public class Receiptrecognition extends AppCompatActivity {
             @Override
             public void onClick(View v) {
           detectTextFromImage();
+          handler = new Handler();
+          handler.post(runnable);
             }
         });
 
+    }
+    public void run(){
+            try{
+                Looper.prepare();
+            }catch (Exception e){
+
+            }
     }
 
     private void dispatchTaskPictureIntent() {
@@ -111,7 +126,7 @@ public class Receiptrecognition extends AppCompatActivity {
 
     }
 
-    private synchronized void detectTextFromImage() {
+    private  void detectTextFromImage() {
         FirebaseVisionImage firebaseVisionImage;
         firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
@@ -135,10 +150,10 @@ public class Receiptrecognition extends AppCompatActivity {
                                         }
                                     }
                                 }
-                                handler = new Handler();
-                                handler.post(runnable);
                             }
                         });
     }
+
+
 }
 
