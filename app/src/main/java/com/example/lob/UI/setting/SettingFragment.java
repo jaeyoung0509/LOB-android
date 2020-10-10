@@ -104,7 +104,6 @@ public class SettingFragment extends Fragment {
                 SocketClient socketClient = new SocketClient(input, getContext());
                 socketClient.start();
 //                result_string = socketClient.getSplitdata();
-                foodDialog = new FoodDialog(getContext());
                 /*
                 ArrayList<FoodDTO> foodDTOS = new ArrayList<FoodDTO>();
                 for (int i = 0; i < result_string.length; i++) {

@@ -46,8 +46,11 @@ public class SocketClient extends Thread  implements  Runnable      {
         @Override
         public void run() {
             if(foodDTOS !=null){
-                foodDialog = new FoodDialog(context);
-                foodDialog.setFoodDTOS(foodDTOS);
+                foodDialog = new FoodDialog(context ,foodDTOS);
+                for(int i =0 ; i<foodDTOS.size(); i++){
+                    Log.e("시발",foodDTOS.get(i).getFood_name());
+
+                }
                 foodDialog.show();
             }
         }

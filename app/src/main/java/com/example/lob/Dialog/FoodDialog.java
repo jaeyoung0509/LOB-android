@@ -2,8 +2,7 @@ package com.example.lob.Dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.view.KeyboardShortcutGroup;
-import android.view.Menu;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -17,36 +16,50 @@ import com.example.lob.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
-public class FoodDialog extends Dialog implements  Runnable{
-    Handler mhandler ;
+public class FoodDialog extends Dialog {
     AdapterFoodInsert adapterFoodInsert;
     Button food_add ,food_insert;
     ListView foodIndexList;
-    List<FoodDTO> foodDTOS = new ArrayList<FoodDTO>();
+    ArrayList<FoodDTO> foodDTOS ;
     FoodInsertDialogListener foodInsertDialogListener;
-    Context context ;
-    @Override
-    public void run() {
+    public interface FoodInsertDialogListener{
+        void onPositiveClicked(List<FoodDTO> foodDTOList);
+    }
+
+    public void setDialogListener(FoodInsertDialogListener foodInsertDialogListener){
+        this.foodInsertDialogListener = foodInsertDialogListener;
+    }
+
+    public FoodDialog(Context context ,ArrayList<FoodDTO> sendFoodDTOS){
+        super(context);
         setContentView(R.layout.dialog_food);
         food_insert = findViewById(R.id.food_insert);
         adapterFoodInsert = new AdapterFoodInsert(context);
         foodIndexList = findViewById(R.id.foodIndexList);
         foodIndexList.setAdapter(adapterFoodInsert);
         food_add = findViewById(R.id.food_add);
-
+        if(sendFoodDTOS !=null){
+            for(int i = 0 ; i <sendFoodDTOS.size() ;i++){
+                adapterFoodInsert.addItem(new FoodDTO(sendFoodDTOS.get(i).getFood_name(), ""));
+            }
+            foodDTOS= (ArrayList<FoodDTO>) adapterFoodInsert.getItems();
+        }
+        else if(sendFoodDTOS == null){
+            foodDTOS= new ArrayList<FoodDTO>();
+        }
+        Log.e("d2",String.valueOf(foodDTOS.size()));
         food_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 adapterFoodInsert.addItem(new FoodDTO("",""));
-                foodDTOS=adapterFoodInsert.getItems();
+                foodDTOS= (ArrayList<FoodDTO>) adapterFoodInsert.getItems();
             }
         });
         food_insert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                foodDTOS = new ArrayList<>();
+                foodDTOS = new ArrayList<FoodDTO>();
                 for(int i =0 ; i < adapterFoodInsert.getCount(); i++){
                     if(!adapterFoodInsert.getItem(i).getFood_name().equals("")){
                         foodDTOS.add(adapterFoodInsert.getItem(i));
@@ -61,32 +74,7 @@ public class FoodDialog extends Dialog implements  Runnable{
             }
         });
     }
-
-    @Override
-    public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, @Nullable Menu menu, int deviceId) {
-
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-    public interface FoodInsertDialogListener{
-        void onPositiveClicked(List<FoodDTO> foodDTOList);
-    }
-    public void setDialogListener(FoodInsertDialogListener foodInsertDialogListener){
-        this.foodInsertDialogListener = foodInsertDialogListener;
-    }
-    public FoodDialog(Context context){
-        super(context);
-        this.context= context;
-    }
     public ArrayList<FoodDTO> getFoodDTOS(){
         return (ArrayList<FoodDTO>) foodDTOS;
     }
-    public  void  setFoodDTOS(ArrayList<FoodDTO> foodDTOS){
-        this.foodDTOS = foodDTOS;
-    }
-
 }

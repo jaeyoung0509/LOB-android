@@ -56,7 +56,7 @@ public class ConsumptionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.e("asdad", "zzzz");
-                FoodDialog foodDialog = new FoodDialog(getContext());
+                FoodDialog foodDialog = new FoodDialog(getContext() , null);
                 foodDialog.setDialogListener(new FoodDialog.FoodInsertDialogListener() {
                     @Override
                     public void onPositiveClicked(List<FoodDTO> foodDTOList) {
