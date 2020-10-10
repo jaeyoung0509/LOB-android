@@ -103,15 +103,6 @@ public class SettingFragment extends Fragment {
                 }
                 SocketClient socketClient = new SocketClient(input, getContext());
                 socketClient.start();
-//                result_string = socketClient.getSplitdata();
-                /*
-                ArrayList<FoodDTO> foodDTOS = new ArrayList<FoodDTO>();
-                for (int i = 0; i < result_string.length; i++) {
-                    foodDTOS.add(new FoodDTO(result_string[i], ""));
-                }
-                foodDialog.setFoodDTOS(foodDTOS);
-                foodDialog.show();
-                 */
             }
         };
         setting_socket.setOnClickListener(new View.OnClickListener() {
@@ -119,16 +110,6 @@ public class SettingFragment extends Fragment {
             public void onClick(View view) {
                 handler = new Handler();
                 handler.postDelayed(runnable3, 1000);
-            /*
-            foodDialog= new FoodDialog(getContext());
-                ArrayList<FoodDTO> foodDTOS = new ArrayList<FoodDTO>();
-
-                    foodDialog= new FoodDialog(getContext());
-                    foodDialog.setFoodDTOS(foodDTOS);
-                    foodDialog.show();
-
-             */
-
             }
         });
         return root;

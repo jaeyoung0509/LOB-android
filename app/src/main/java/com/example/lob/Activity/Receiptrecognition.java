@@ -54,7 +54,7 @@ public class Receiptrecognition extends AppCompatActivity {
     String inputReceipt = null;
     static final int REQUEST_RECEiPT_IMAGE = 1;
     Handler handler;
-    Runnable runnable, runnable2, runnable3;
+    Runnable runnable;
     private Bitmap imageBitmap = null;
     Handler mhandler;
 
@@ -73,15 +73,7 @@ public class Receiptrecognition extends AppCompatActivity {
                 dispatchTaskPictureIntent();
             }
         });
-        handler = new Handler(Looper.getMainLooper());
         runnable = new Runnable() {
-            @Override
-            public void run() {
-                inputReceipt = new String();
-                inputReceipt = detectTextFromImage();
-            }
-        };
-        runnable2 = new Runnable() {
             @Override
             public void run() {
                 if (inputReceipt != null) {
@@ -92,14 +84,10 @@ public class Receiptrecognition extends AppCompatActivity {
         };
 
 
-
         receipt_detect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mhandler = new Handler();
-                mhandler.postDelayed(runnable, 1100);
-                mhandler.postDelayed(runnable2, 1100);
-                mhandler.post(runnable3);
+          detectTextFromImage();
             }
         });
 
@@ -123,8 +111,7 @@ public class Receiptrecognition extends AppCompatActivity {
 
     }
 
-    private synchronized String detectTextFromImage() {
-        inputString = new String();
+    private synchronized void detectTextFromImage() {
         FirebaseVisionImage firebaseVisionImage;
         firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
@@ -144,13 +131,14 @@ public class Receiptrecognition extends AppCompatActivity {
                                         List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
                                         for (FirebaseVisionText.Element element : line.getElements()) {
                                             String elementText = element.getText();
-                                            inputString += elementText + "and";
+                                            inputString += elementText + ",";
                                         }
                                     }
                                 }
+                                handler = new Handler();
+                                handler.post(runnable);
                             }
                         });
-        return inputString;
     }
 }
 

@@ -89,7 +89,6 @@ public class SocketClient extends Thread  implements  Runnable      {
             }
             handler = new Handler();
             handler.post(runnable);
-            Looper.loop();
         }catch (Exception e){
             e.printStackTrace();
         } finally {
@@ -101,6 +100,7 @@ public class SocketClient extends Thread  implements  Runnable      {
                 e1.printStackTrace();
             }
         }
-    }
+       Looper.loop();
+   }
 
 }

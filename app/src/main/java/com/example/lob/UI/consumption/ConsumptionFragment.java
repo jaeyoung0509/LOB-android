@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.lob.API.FoodAPI;
+import com.example.lob.Activity.Receiptrecognition;
 import com.example.lob.DTO.BoardDto;
 import com.example.lob.DTO.FoodDTO;
 import com.example.lob.Adapter.AdapterFoodInsert;
@@ -37,6 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ConsumptionFragment extends Fragment {
     private FoodAPI foodAPI;
     private ConsumptionViewModel consumptionViewModel;
+
     Button add_receiptCamera, add_food;
     private final String BASE_URL = "http://34.123.194.45";
     private FirebaseAuth googleAuth = FirebaseAuth.getInstance();
@@ -48,7 +50,7 @@ public class ConsumptionFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         consumptionViewModel =
                 ViewModelProviders.of(this).get(ConsumptionViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_consumption, container, false);
+        final View root = inflater.inflate(R.layout.fragment_consumption, container, false);
         add_receiptCamera = root.findViewById(R.id.add_receiptCamera);
         add_food = root.findViewById(R.id.add_food);
         //영수증
@@ -82,16 +84,6 @@ public class ConsumptionFragment extends Fragment {
                                     Log.e("call",String.valueOf(call)+String.valueOf(t));
                                 }
                             });
-
-
-                            /*
-                            foodarray=foodDTOList;
-                            if(foodarray.size() != 0 ){
-                                for (int i=0; i< foodarray.size() ; i++){
-                                    adapterFoodInsert.addItem(foodarray.get(i));
-                                }
-
-                            }*/
                         }
                     }
 
@@ -104,7 +96,8 @@ public class ConsumptionFragment extends Fragment {
         add_food.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(root.getContext(), Receiptrecognition.class);
+                startActivity(intent);
             }
         });
         return root;
