@@ -91,29 +91,7 @@ public class Receiptrecognition extends AppCompatActivity {
             }
         };
 
-        runnable3 = new Runnable() {
-            @Override
-            public void run() {
-                 if(socketClient != null && socketClient.getFoodDTOS() != null){
-                    Log.e("TTTTT","zzzzz");
-                    FoodDialog foodDialog = new FoodDialog(getApplicationContext());
-                    Log.e("TTTTT","zzzz123z");
 
-                    foodDialog.setFoodDTOS(socketClient.getFoodDTOS());
-                    Log.e("TTTTT","zzzz5555z");
-
-                    foodDialog.show();
-                    Log.e("TTTTT","zzzz12512125125z");
-
-                    try{
-                        socketClient.inputStream.close();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        };
 
         receipt_detect.setOnClickListener(new View.OnClickListener() {
             @Override
