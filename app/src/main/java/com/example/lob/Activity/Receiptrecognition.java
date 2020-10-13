@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,19 +45,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Receiptrecognition extends AppCompatActivity {
+    private String tempString   = null;
     private String inputString = null;
     private Button receipt_caputure, receipt_detect;
     private ImageView receipt_image;
     private TextView receipt_display;
-    ExecutorService executorService = Executors.newFixedThreadPool(
-            Runtime.getRuntime().availableProcessors()
-    );
     private SocketClient socketClient;
-    String inputReceipt = null;
     static final int REQUEST_RECEiPT_IMAGE = 1;
     Handler handler;
     Runnable runnable;
     private Bitmap imageBitmap = null;
+
+    public void setInputString(String inputString) {
+        this.inputString = inputString;
+    }
+
+    public String getInputString() {
+        return inputString;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,27 +74,24 @@ public class Receiptrecognition extends AppCompatActivity {
         receipt_display.setText("");
         receipt_detect = findViewById(R.id.receipt_detect);
 
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(getInputString() != null){
+                    SocketClient socketClient = new SocketClient(getInputString(), Receiptrecognition.this);
+                    socketClient.start();
+                }
+            }
+        };
+
         receipt_caputure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchTaskPictureIntent();
+                handler = new Handler();
+                handler.post(runnable);
             }
         });
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Looper.prepare();
-                    if (!inputReceipt.equals("")) {
-                        socketClient = new SocketClient(receipt_display.getText().toString(), getApplicationContext());
-                        socketClient.start();
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                Looper.loop();
-            }
-        };
 
 
         receipt_detect.setOnClickListener(new View.OnClickListener() {
@@ -100,14 +104,6 @@ public class Receiptrecognition extends AppCompatActivity {
         });
 
     }
-    public void run(){
-            try{
-                Looper.prepare();
-            }catch (Exception e){
-
-            }
-    }
-
     private void dispatchTaskPictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -127,6 +123,7 @@ public class Receiptrecognition extends AppCompatActivity {
     }
 
     private  void detectTextFromImage() {
+        tempString = new String();
         FirebaseVisionImage firebaseVisionImage;
         firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
@@ -140,16 +137,17 @@ public class Receiptrecognition extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                             @Override
                             public void onSuccess(FirebaseVisionText firebaseVisionText) {
-                                receipt_display.setText(firebaseVisionText.getText());
+                                receipt_display.setText("인식중입니다.");
                                 for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
                                     for (FirebaseVisionText.Line line : block.getLines()) {
                                         List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
                                         for (FirebaseVisionText.Element element : line.getElements()) {
                                             String elementText = element.getText();
-                                            inputString += elementText + ",";
+                                            tempString+=element.getText()+",";
                                         }
                                     }
                                 }
+                                setInputString(tempString);
                             }
                         });
     }
