@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.lob.API.FoodAPI;
+import com.example.lob.Activity.Foodrecognition;
 import com.example.lob.Activity.Receiptrecognition;
 import com.example.lob.DTO.BoardDto;
 import com.example.lob.DTO.FoodDTO;
@@ -97,7 +98,7 @@ public class ConsumptionFragment extends Fragment {
         add_food.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(root.getContext(), Receiptrecognition.class);
+                Intent intent = new Intent(root.getContext(), Foodrecognition.class);
                 startActivity(intent);
             }
         });
