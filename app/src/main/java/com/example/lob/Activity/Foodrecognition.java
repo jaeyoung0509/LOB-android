@@ -114,9 +114,9 @@ public class Foodrecognition extends AppCompatActivity {
             @Override
             public void onSuccess(List<FirebaseVisionImageLabel> labels) {
                 for(FirebaseVisionImageLabel label : labels){
-                        String text = label.getText();
                         tempString+=label.getText()+",";
                 }
+                Log.e("tempString",tempString);
                 setInputString(tempString);
             }
         });
